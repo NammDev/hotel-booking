@@ -1,5 +1,5 @@
 import express from 'express'
-import { check, validationResult } from 'express-validator'
+import { check } from 'express-validator'
 import { registrationUser } from '../controllers/user.controller'
 
 const userRouter = express.Router()

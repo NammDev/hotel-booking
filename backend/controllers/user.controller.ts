@@ -1,9 +1,14 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
+import { validationResult } from 'express-validator'
 import User from '../models/user.model'
 
 export const registrationUser = async (req: Request, res: Response) => {
   try {
+    const error = validationResult(req)
+    if (!error.isEmpty()) {
+      return res.status(400).json({ message: 'Registration error', error: error.array() })
+    }
     let user = await User.findOne({
       email: req.body.email,
     })
