@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
-import jwt from 'jsonwebtoken'
 import { validationResult } from 'express-validator'
 import User from '../models/user.model'
+import { sendToken } from '../utils/jwt'
 
 export const registrationUser = async (req: Request, res: Response) => {
   try {
@@ -19,15 +19,7 @@ export const registrationUser = async (req: Request, res: Response) => {
     user = new User(req.body)
     await user.save()
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
-      expiresIn: '1d',
-    })
-    res.cookie('auth_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 86400000,
-    })
-    return res.sendStatus(200)
+    sendToken(user, 200, res)
   } catch (error) {
     console.log(error)
     res.status(500).send({ message: 'Server Error Right?' })
