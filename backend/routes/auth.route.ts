@@ -12,6 +12,7 @@ authRouter.post(
       min: 6,
     }),
   ],
+  // something wrong here
   loginUser
 )
 
