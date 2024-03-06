@@ -1,6 +1,6 @@
 'use client'
 
-import * as React from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -19,14 +19,14 @@ import {
 import { Input } from '@/components/ui/input'
 import { Icons } from '@/components/icons'
 import { PasswordInput } from '@/components/password-input'
+import { delayTest } from '@/lib/utils'
 
 type FormData = z.infer<typeof authSchema>
 
 export function SignUpForm() {
   const router = useRouter()
-  //   const [isPending, startTransition] = React.useTransition()
 
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   // react-hook-form
   const form = useForm<FormData>({
@@ -40,26 +40,27 @@ export function SignUpForm() {
     },
   })
 
-  function onSubmit(data: FormData) {
-    // if (!isLoaded) return
-    // startTransition(async () => {
-    //   try {
-    //     await signUp.create({
-    //       emailAddress: data.email,
-    //       password: data.password,
-    //     })
-    //     // Send email verification code
-    //     await signUp.prepareEmailAddressVerification({
-    //       strategy: 'email_code',
-    //     })
-    //     router.push('/signup/verify-email')
-    //     toast.message('Check your email', {
-    //       description: 'We sent you a 6-digit verification code.',
-    //     })
-    //   } catch (err) {
-    //     catchClerkError(err)
-    //   }
+  async function onSubmit(data: FormData) {
+    setIsLoading(true)
+
+    // await signUp.create({
+    //   emailAddress: data.email,
+    //   password: data.password,
     // })
+    // Send email verification code
+    // await signUp.prepareEmailAddressVerification({
+    //   strategy: 'email_code',
+    // })
+    // router.push('/signup/verify-email')
+    // toast.message('Check your email', {
+    //   description: 'We sent you a 6-digit verification code.',
+    // })
+
+    console.log('Bat dau dang nhap')
+    await delayTest(1000)
+    console.log(data)
+
+    setIsLoading(false)
   }
 
   return (

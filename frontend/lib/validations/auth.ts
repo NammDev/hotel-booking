@@ -10,10 +10,10 @@ export const authSchema = z
       message: 'Please enter a valid email address',
     }),
     firstName: z.string().min(1, {
-      message: 'Password must be at least 1 characters long',
+      message: 'Input please',
     }),
     lastName: z.string().min(1, {
-      message: 'Password must be at least 1 characters long',
+      message: 'Input please',
     }),
     password: z
       .string()
@@ -24,9 +24,7 @@ export const authSchema = z
       .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, {
         message: 'Password must contain at least 8 characters',
       }),
-    confirmPassword: z.string().min(8, {
-      message: 'Confirm password must be at least 8 characters long',
-    }),
+    confirmPassword: z.string().min(8),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
