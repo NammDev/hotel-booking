@@ -1,7 +1,6 @@
 import { sendToken } from './../utils/jwt'
 import { Request, Response, NextFunction } from 'express'
 import { validationResult } from 'express-validator'
-import bcrypt from 'bcryptjs'
 import User from '../models/user.model'
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -17,13 +16,13 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     // check if the user exists
     const user = await User.findOne({ email })
     if (!user) {
-      return res.status(400).json({ message: 'Invalid Credentials' })
+      return res.status(400).json({ message: 'Can not find this email!' })
     }
 
     // check if the password is correct
-    const isMatch = await bcrypt.compare(password, user.password)
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid Credentials' })
+    const isPasswordMatch = await user.comparePassword(password)
+    if (!isPasswordMatch) {
+      return res.status(400).json({ message: 'Invalid password' })
     }
 
     sendToken(user, 200, res)

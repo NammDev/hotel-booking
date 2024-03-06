@@ -13,7 +13,8 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
-app.use('/api/users', userRouter, authRouter)
+app.use('/api/users', userRouter)
+app.use('/api/auth', authRouter)
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`)
