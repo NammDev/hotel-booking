@@ -4,23 +4,34 @@ export const userAuthSchema = z.object({
   email: z.string().email(),
 })
 
-export const authSchema = z.object({
-  email: z.string().email({
-    message: 'Please enter a valid email address',
-  }),
-  password: z
-    .string()
-    .min(8, {
-      message: 'Password must be at least 8 characters long',
-    })
-    .max(100)
-    .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, {
-      message: 'Password must contain at least 8 characters',
+export const authSchema = z
+  .object({
+    email: z.string().email({
+      message: 'Please enter a valid email address',
     }),
-  confirmPassword: z.string().min(8, {
-    message: 'Current password must be at least 8 characters long',
-  }),
-})
+    firstName: z.string().min(1, {
+      message: 'Password must be at least 1 characters long',
+    }),
+    lastName: z.string().min(1, {
+      message: 'Password must be at least 1 characters long',
+    }),
+    password: z
+      .string()
+      .min(8, {
+        message: 'Password must be at least 8 characters long',
+      })
+      .max(100)
+      .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, {
+        message: 'Password must contain at least 8 characters',
+      }),
+    confirmPassword: z.string().min(8, {
+      message: 'Confirm password must be at least 8 characters long',
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
 
 export const verifyEmailSchema = z.object({
   code: z
@@ -31,20 +42,20 @@ export const verifyEmailSchema = z.object({
     .max(6),
 })
 
-export const checkEmailSchema = z.object({
-  email: authSchema.shape.email,
-})
+// export const checkEmailSchema = z.object({
+//   email: authSchema.shape.email,
+// })
 
-export const resetPasswordSchema = z
-  .object({
-    password: authSchema.shape.password,
-    confirmPassword: authSchema.shape.password,
-    code: verifyEmailSchema.shape.code,
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  })
+// export const resetPasswordSchema = z
+//   .object({
+//     password: authSchema.shape.password,
+//     confirmPassword: authSchema.shape.password,
+//     code: verifyEmailSchema.shape.code,
+//   })
+//   .refine((data) => data.password === data.confirmPassword, {
+//     message: 'Passwords do not match',
+//     path: ['confirmPassword'],
+//   })
 
 export const userPrivateMetadataSchema = z.object({
   role: z.enum(['user', 'admin', 'super_admin']),

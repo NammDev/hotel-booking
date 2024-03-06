@@ -32,6 +32,8 @@ export function SignUpForm() {
   const form = useForm<FormData>({
     resolver: zodResolver(authSchema),
     defaultValues: {
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -76,6 +78,34 @@ export function SignUpForm() {
             </FormItem>
           )}
         />
+        <div className='flex justify-between w-full'>
+          <FormField
+            control={form.control}
+            name='firstName'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>First Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='lastName'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name='password'
@@ -104,7 +134,7 @@ export function SignUpForm() {
         />
         <Button disabled={isLoading}>
           {isLoading && <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />}
-          Continue
+          Create Account
           <span className='sr-only'>Continue to email verification page</span>
         </Button>
       </form>
