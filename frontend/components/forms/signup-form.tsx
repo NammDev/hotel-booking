@@ -34,6 +34,7 @@ export function SignUpForm() {
     defaultValues: {
       email: '',
       password: '',
+      confirmPassword: '',
     },
   })
 
@@ -81,6 +82,19 @@ export function SignUpForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
+              <FormControl>
+                <PasswordInput placeholder='**********' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='confirmPassword'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
               <FormControl>
                 <PasswordInput placeholder='**********' {...field} />
               </FormControl>

@@ -17,6 +17,9 @@ export const authSchema = z.object({
     .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, {
       message: 'Password must contain at least 8 characters',
     }),
+  confirmPassword: z.string().min(8, {
+    message: 'Current password must be at least 8 characters long',
+  }),
 })
 
 export const verifyEmailSchema = z.object({
