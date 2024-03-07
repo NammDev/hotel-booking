@@ -31,6 +31,8 @@ export const authSchema = z
     path: ['confirmPassword'],
   })
 
+export type RegisterFormData = z.infer<typeof authSchema>
+
 export const verifyEmailSchema = z.object({
   code: z
     .string()

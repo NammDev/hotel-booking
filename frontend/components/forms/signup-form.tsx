@@ -1,12 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import type { z } from 'zod'
 
-import { authSchema } from '@/lib/validations/auth'
+import { RegisterFormData, authSchema } from '@/lib/validations/auth'
+import { toast } from '@/components/ui/use-toast'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -19,14 +18,33 @@ import {
 import { Input } from '@/components/ui/input'
 import { Icons } from '@/components/icons'
 import { PasswordInput } from '@/components/password-input'
-import { delayTest } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { registerUserApi } from '@/services/api/auth'
 
 type FormData = z.infer<typeof authSchema>
 
 export function SignUpForm() {
+  const queryClient = useQueryClient()
   const router = useRouter()
-
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const { data, mutate, isPending, error, status } = useMutation({
+    mutationFn: (data: RegisterFormData) => registerUserApi(data),
+    onSettled: async (_, error: any, variables) => {
+      if (error) {
+        toast({
+          variant: 'destructive',
+          title: error.name,
+          description: error.response.data.message,
+        })
+      } else {
+        router.push('/register/verify-email')
+        toast({
+          title: 'Check your email',
+          description: 'We sent you a 6-digit verification code.',
+        })
+      }
+    },
+  })
 
   // react-hook-form
   const form = useForm<FormData>({
@@ -40,9 +58,8 @@ export function SignUpForm() {
     },
   })
 
-  async function onSubmit(data: FormData) {
-    setIsLoading(true)
-
+  async function onSubmit(registerData: FormData) {
+    mutate(registerData)
     // await signUp.create({
     //   emailAddress: data.email,
     //   password: data.password,
@@ -51,16 +68,6 @@ export function SignUpForm() {
     // await signUp.prepareEmailAddressVerification({
     //   strategy: 'email_code',
     // })
-    // router.push('/signup/verify-email')
-    // toast.message('Check your email', {
-    //   description: 'We sent you a 6-digit verification code.',
-    // })
-
-    console.log('Bat dau dang nhap')
-    await delayTest(1000)
-    console.log(data)
-
-    setIsLoading(false)
   }
 
   return (
@@ -133,8 +140,8 @@ export function SignUpForm() {
             </FormItem>
           )}
         />
-        <Button disabled={isLoading}>
-          {isLoading && <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />}
+        <Button disabled={isPending}>
+          {isPending && <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />}
           Create Account
           <span className='sr-only'>Continue to email verification page</span>
         </Button>

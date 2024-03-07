@@ -12,7 +12,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: { retry: 5, retryDelay: 1000, staleTime: 4 * 1000, refetchInterval: 4 * 1000 },
-          mutations: { retry: 5, retryDelay: 1000 },
+          mutations: { retry: 3, retryDelay: 500 },
         },
       })
   )
