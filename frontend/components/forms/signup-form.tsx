@@ -32,10 +32,9 @@ export function SignUpForm() {
   const { mutate, isPending } = useMutation({
     mutationFn: (data: RegisterFormData) => registerUserApi(data),
     onSuccess: async () => {
-      router.push('/register/verify-email')
       toast({
-        title: 'Check your email',
-        description: 'We sent you a 6-digit verification code.',
+        title: 'Sucessfully registered!',
+        description: 'Please check your email to verify your account.',
       })
       // await queryClient.invalidateQueries('validateToken')
       router.push('/')
@@ -52,13 +51,6 @@ export function SignUpForm() {
   // react-hook-form
   const form = useForm<FormData>({
     resolver: zodResolver(authSchema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    },
   })
 
   async function onSubmit(registerData: FormData) {

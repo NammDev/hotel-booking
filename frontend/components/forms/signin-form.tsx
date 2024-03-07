@@ -1,108 +1,94 @@
 'use client'
 
-import * as React from 'react'
-import * as z from 'zod'
-import { useState, HTMLAttributes } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
-import { cn } from '@/lib/utils'
-import { userAuthSchema } from '@/lib/validations/auth'
-import { buttonVariants } from '@/components/ui/button'
+import { LoginFormData, userAuthSchema } from '@/lib/validations/auth'
+import { toast } from '@/components/ui/use-toast'
+import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Icons } from '@/components/icons'
+import { PasswordInput } from '@/components/password-input'
+import { useRouter } from 'next/navigation'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { loginUserApi } from '@/services/api/auth'
 
-interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> {}
+export function SignInForm() {
+  const queryClient = useQueryClient()
+  const router = useRouter()
 
-type FormData = z.infer<typeof userAuthSchema>
+  // tanstack query
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: LoginFormData) => loginUserApi(data),
+    onSuccess: async () => {
+      toast({
+        title: 'Login successful!',
+        description: 'Welcome back!',
+      })
+      // await queryClient.invalidateQueries('validateToken')
+      router.push('/')
+    },
+    onError: (error: any) => {
+      toast({
+        variant: 'destructive',
+        title: error.name,
+        description: error.response.data.message,
+      })
+    },
+  })
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
+  // react-hook-form
+  const form = useForm<LoginFormData>({
     resolver: zodResolver(userAuthSchema),
   })
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [isGitHubLoading, setIsGitHubLoading] = useState<boolean>(false)
 
-  async function onSubmit(data: FormData) {
-    setIsLoading(true)
-    // const signInResult = await signIn('email', {
-    //   email: data.email.toLowerCase(),
-    //   redirect: false,
-    //   callbackUrl: searchParams?.get('from') || '/dashboard',
-    // })
-    setIsLoading(false)
-    // if (!signInResult?.ok) {
-    //   return toast({
-    //     title: 'Something went wrong.',
-    //     description: 'Your sign in request failed. Please try again.',
-    //     variant: 'destructive',
-    //   })
-    // }
-    // return toast({
-    //   title: 'Check your email',
-    //   description: 'We sent you a login link. Be sure to check your spam too.',
-    // })
-  }
-
-  async function handleGitHubSignIn() {
-    setIsGitHubLoading(true)
-    // sign in with github
-
-    setIsGitHubLoading(false)
+  async function onSubmit(loginData: LoginFormData) {
+    mutate(loginData)
   }
 
   return (
-    <div className={cn('grid gap-6', className)} {...props}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className='grid gap-2'>
-          <div className='grid gap-1'>
-            <Label className='sr-only' htmlFor='email'>
-              Email
-            </Label>
-            <Input
-              id='email'
-              placeholder='name@example.com'
-              type='email'
-              autoCapitalize='none'
-              autoComplete='email'
-              autoCorrect='off'
-              disabled={isLoading || isGitHubLoading}
-              {...register('email')}
-            />
-            {errors?.email && <p className='px-1 text-xs text-red-600'>{errors.email.message}</p>}
-          </div>
-          <button className={cn(buttonVariants())} disabled={isLoading}>
-            {isLoading && <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />}
-            Sign In with Email
-          </button>
-        </div>
+    <Form {...form}>
+      <form className='grid gap-4' onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
+          name='email'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input type='text' placeholder='rodneymullen180@gmail.com' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='password'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <PasswordInput placeholder='**********' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type='submit' disabled={isPending}>
+          {isPending && <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />}
+          Sign in
+          <span className='sr-only'>Sign in</span>
+        </Button>
       </form>
-      <div className='relative'>
-        <div className='absolute inset-0 flex items-center'>
-          <span className='w-full border-t' />
-        </div>
-        <div className='relative flex justify-center text-xs uppercase'>
-          <span className='bg-background px-2 text-muted-foreground'>Or continue with</span>
-        </div>
-      </div>
-      <button
-        type='button'
-        className={cn(buttonVariants({ variant: 'outline' }))}
-        onClick={handleGitHubSignIn}
-        disabled={isLoading || isGitHubLoading}
-      >
-        {isGitHubLoading ? (
-          <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
-        ) : (
-          <Icons.gitHub className='mr-2 h-4 w-4' />
-        )}{' '}
-        Github
-      </button>
-    </div>
+    </Form>
   )
 }

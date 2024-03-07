@@ -6,11 +6,7 @@ import { buttonVariants } from '@/components/ui/button'
 import { MainNav } from '@/components/main-nav'
 import { SiteFooter } from '@/components/site-footer'
 
-interface MarketingLayoutProps {
-  children: React.ReactNode
-}
-
-export default async function MarketingLayout({ children }: MarketingLayoutProps) {
+export default async function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className='flex min-h-screen flex-col'>
       <header className='container z-40 bg-background'>
@@ -18,7 +14,7 @@ export default async function MarketingLayout({ children }: MarketingLayoutProps
           <MainNav items={marketingConfig.mainNav} />
           <nav>
             <Link
-              href='/login'
+              href='/signin'
               className={cn(buttonVariants({ variant: 'secondary', size: 'sm' }), 'px-4')}
             >
               Login
