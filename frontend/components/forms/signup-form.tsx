@@ -27,22 +27,25 @@ type FormData = z.infer<typeof authSchema>
 export function SignUpForm() {
   const queryClient = useQueryClient()
   const router = useRouter()
-  const { data, mutate, isPending, error, status } = useMutation({
+
+  // tanstack query
+  const { mutate, isPending } = useMutation({
     mutationFn: (data: RegisterFormData) => registerUserApi(data),
-    onSettled: async (_, error: any, variables) => {
-      if (error) {
-        toast({
-          variant: 'destructive',
-          title: error.name,
-          description: error.response.data.message,
-        })
-      } else {
-        router.push('/register/verify-email')
-        toast({
-          title: 'Check your email',
-          description: 'We sent you a 6-digit verification code.',
-        })
-      }
+    onSuccess: async () => {
+      router.push('/register/verify-email')
+      toast({
+        title: 'Check your email',
+        description: 'We sent you a 6-digit verification code.',
+      })
+      // await queryClient.invalidateQueries('validateToken')
+      router.push('/')
+    },
+    onError: (error: any) => {
+      toast({
+        variant: 'destructive',
+        title: error.name,
+        description: error.response.data.message,
+      })
     },
   })
 
@@ -60,14 +63,6 @@ export function SignUpForm() {
 
   async function onSubmit(registerData: FormData) {
     mutate(registerData)
-    // await signUp.create({
-    //   emailAddress: data.email,
-    //   password: data.password,
-    // })
-    // Send email verification code
-    // await signUp.prepareEmailAddressVerification({
-    //   strategy: 'email_code',
-    // })
   }
 
   return (
