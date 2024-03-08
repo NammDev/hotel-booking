@@ -5,7 +5,7 @@ import localFont from 'next/font/local'
 import { Toaster } from '@/components/ui/toaster'
 
 import { cn } from '@/lib/utils'
-import { Providers } from '@/components/provider'
+import { Providers } from '@/components/layouts/provider'
 
 export const fontSans = FontSans({
   subsets: ['latin'],
