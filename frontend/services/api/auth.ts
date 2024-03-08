@@ -27,3 +27,7 @@ export const registerUserApi = async (formData: RegisterFormData) => {
 export const loginUserApi = async (formData: LoginFormData) => {
   return await axiosInstance.post(`api/auth/login`, formData)
 }
+
+export const validateTokenApi = async () => {
+  return await axiosInstance.get(`api/auth/validate-token`)
+}
