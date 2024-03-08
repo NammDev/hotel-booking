@@ -9,12 +9,13 @@ type AppContext = {
 const AppContext = createContext<AppContext | undefined>(undefined)
 
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
-  const { isError } = useQuery({
-    queryKey: ['validateToken'],
-    queryFn: validateTokenApi,
-    retry: false,
-  })
+  // const { isError } = useQuery({
+  //   queryKey: ['validateToken'],
+  //   queryFn: validateTokenApi,
+  //   retry: false,
+  // })
 
+  const isError = false
   return (
     <AppContext.Provider
       value={{

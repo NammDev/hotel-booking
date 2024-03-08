@@ -36,14 +36,14 @@ export function SignUpForm() {
         title: 'Sucessfully registered!',
         description: 'Please check your email to verify your account.',
       })
-      queryClient.invalidateQueries({ queryKey: ['validateToken'] })
+      // queryClient.invalidateQueries({ queryKey: ['validateToken'] })
       router.push('/')
     },
     onError: (error: any) => {
       toast({
         variant: 'destructive',
-        title: error.name,
-        description: error.response.data.message,
+        title: error.name || 'Error',
+        description: error.response.data.message || 'Something wrong happened',
       })
     },
   })

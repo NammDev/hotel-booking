@@ -8,6 +8,7 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, //  Include cookies in cross-origin requests
   transformRequest: [
     (data) => {
       return JSON.stringify(data)
