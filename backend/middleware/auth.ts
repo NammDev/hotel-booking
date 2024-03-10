@@ -1,5 +1,6 @@
 import { Response, NextFunction, Request } from 'express'
 import jwt, { JwtPayload } from 'jsonwebtoken'
+import { updateAccessToken } from '../controllers/auth.controller'
 // import { updateAccessToken } from '../controllers/user.controller'
 
 declare global {
@@ -25,18 +26,15 @@ export const isAutheticated = async (req: Request, res: Response, next: NextFunc
   // check if the access token is expired
   if (decoded.exp && decoded.exp <= Date.now() / 1000) {
     try {
-      // await updateAccessToken(req, res, next)
-      console.log('Access token is expired')
+      await updateAccessToken(req, res, next)
     } catch (error) {
       return next(error)
     }
   } else {
-    // redis
     // const user = await redis.get(decoded.id)
     // if (!user) {
     //   return next(new ErrorHandler('Please login to access this resource', 400))
     // }
-    // req.user = JSON.parse(user)
 
     req.userId = decoded.id
     next()

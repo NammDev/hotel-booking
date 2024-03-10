@@ -1,8 +1,10 @@
-import { sendToken } from './../utils/jwt'
+import { sendToken, accessTokenOptions, refreshTokenOptions } from './../utils/jwt'
 import { Request, Response, NextFunction } from 'express'
 import { validationResult } from 'express-validator'
 import { getUserById } from '../services/auth'
 import UserModel from '../models/user.model'
+
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   // express validator
@@ -38,5 +40,35 @@ export const getUserInfo = async (req: Request, res: Response, next: NextFunctio
     getUserById(userId, res)
   } catch (error: any) {
     return res.status(400).json(error.message)
+  }
+}
+
+// update access token
+export const updateAccessToken = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const refresh_token = req.cookies.refresh_token as string
+    const decoded = jwt.verify(refresh_token, process.env.REFRESH_TOKEN as string) as JwtPayload
+
+    const message = 'Could not refresh token'
+    if (!decoded) {
+      return res.status(400).json({ message })
+    }
+
+    const accessToken = jwt.sign({ id: decoded.id }, process.env.ACCESS_TOKEN as string, {
+      expiresIn: '5m',
+    })
+
+    const refreshToken = jwt.sign({ id: decoded.id }, process.env.REFRESH_TOKEN as string, {
+      expiresIn: '3d',
+    })
+
+    req.userId = decoded.id
+
+    res.cookie('access_token', accessToken, accessTokenOptions)
+    res.cookie('refresh_token', refreshToken, refreshTokenOptions)
+
+    return next()
+  } catch (error: any) {
+    return res.status(400).json({ error: error.message })
   }
 }
