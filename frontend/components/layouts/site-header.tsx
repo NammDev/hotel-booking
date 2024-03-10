@@ -19,10 +19,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { DashboardIcon, ExitIcon, GearIcon } from '@radix-ui/react-icons'
 import { Icons } from '../icons'
-import { useAppContext } from '@/context/AppContext'
+import { UserType } from '@/lib/type'
 
-export function SiteHeader() {
-  const { user } = useAppContext()
+export function SiteHeader({ user }: { user: UserType | undefined }) {
   const initials = `${user?.firstName?.charAt(0) ?? ''} ${user?.lastName?.charAt(0) ?? ''}`
 
   return (
