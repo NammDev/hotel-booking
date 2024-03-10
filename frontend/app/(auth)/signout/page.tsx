@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 // import { LogOutButtons } from '@/components/auth/logout-buttons'
 import { PageHeader, PageHeaderDescription, PageHeaderHeading } from '@/components/page-header'
 import { Shell } from '@/components/shells/shell'
+import { LogOutButtons } from '@/components/auth/logout-buttons'
 
 export const metadata: Metadata = {
   // metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -21,7 +22,7 @@ export default function SignOutPage() {
         <PageHeaderHeading size='sm'>Sign out</PageHeaderHeading>
         <PageHeaderDescription size='sm'>Are you sure you want to sign out?</PageHeaderDescription>
       </PageHeader>
-      {/* <LogOutButtons /> */}
+      <LogOutButtons />
     </Shell>
   )
 }
