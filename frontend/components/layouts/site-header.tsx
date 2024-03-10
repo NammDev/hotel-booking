@@ -20,9 +20,12 @@ import { Button } from '@/components/ui/button'
 import { DashboardIcon, ExitIcon, GearIcon } from '@radix-ui/react-icons'
 import { Icons } from '../icons'
 import { UserType } from '@/lib/type'
+import { useQuery } from '@tanstack/react-query'
+import { getUserApi } from '@/services/api/auth'
 
 export function SiteHeader({ user }: { user: UserType | undefined }) {
   const initials = `${user?.firstName?.charAt(0) ?? ''} ${user?.lastName?.charAt(0) ?? ''}`
+  const { isLoading } = useQuery({ queryKey: ['user'], queryFn: getUserApi, retry: false })
 
   return (
     <header className='sticky top-0 z-50 w-full border-b bg-background'>
@@ -36,7 +39,11 @@ export function SiteHeader({ user }: { user: UserType | undefined }) {
           <nav className='flex items-center space-x-2'>
             {/* <ProductsCommandMenu />
               <CartSheet /> */}
-            {user ? (
+            {isLoading ? (
+              <Avatar className='size-8'>
+                <AvatarFallback>..</AvatarFallback>
+              </Avatar>
+            ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant='secondary' className='relative size-8 rounded-full'>
