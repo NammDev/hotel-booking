@@ -2,6 +2,7 @@ import { sendToken } from './../utils/jwt'
 import { Request, Response, NextFunction } from 'express'
 import { validationResult } from 'express-validator'
 import User from '../models/user.model'
+import { getUserById } from '../services/auth'
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   // express validator
@@ -29,5 +30,14 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: 'Something went wrong!' })
+  }
+}
+
+export const getUserInfo = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req?.userId as string
+    getUserById(userId, res)
+  } catch (error: any) {
+    return res.status(400).json(error.message)
   }
 }
