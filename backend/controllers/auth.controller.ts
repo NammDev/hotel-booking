@@ -72,3 +72,19 @@ export const updateAccessToken = async (req: Request, res: Response, next: NextF
     return res.status(400).json({ error: error.message })
   }
 }
+
+// logout user
+export const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.cookie('access_token', '', { maxAge: 1 })
+    res.cookie('refresh_token', '', { maxAge: 1 })
+    // const userId = req.userId || ''
+    // redis.del(userId)
+    res.status(200).json({
+      success: true,
+      message: 'Logged out successfully',
+    })
+  } catch (error: any) {
+    return res.status(400).json({ error: error.message })
+  }
+}

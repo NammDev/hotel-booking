@@ -25,7 +25,7 @@ export function LogOutButtons() {
         description: 'Goodbye!',
       })
       await queryClient.invalidateQueries({ queryKey: ['user'] })
-      router.push(`${window.location.origin}/?redirect=false`)
+      router.push(`/`)
     },
     onError: (error: any) => {
       toast({

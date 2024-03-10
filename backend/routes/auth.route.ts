@@ -1,6 +1,6 @@
 import express from 'express'
 import { check } from 'express-validator'
-import { getUserInfo, loginUser } from '../controllers/auth.controller'
+import { getUserInfo, loginUser, logoutUser } from '../controllers/auth.controller'
 import { isAutheticated } from '../middleware/auth'
 
 const authRouter = express.Router()
@@ -17,5 +17,6 @@ authRouter.post(
 )
 
 authRouter.get('/me', isAutheticated, getUserInfo)
+authRouter.get('/logout', isAutheticated, logoutUser)
 
 export default authRouter
