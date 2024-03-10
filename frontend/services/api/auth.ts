@@ -30,6 +30,6 @@ export const loginUserApi = async (formData: LoginFormData) => {
   return await axiosInstance.post(`api/auth/login`, formData)
 }
 
-export const getUser = async (): Promise<UserType> => {
+export const getUserApi = async (): Promise<UserType> => {
   return (await axiosInstance.get(`api/auth/me`)).data.user
 }

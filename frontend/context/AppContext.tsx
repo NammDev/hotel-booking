@@ -1,5 +1,5 @@
 import { UserType } from '@/lib/type'
-import { getUser } from '@/services/api/auth'
+import { getUserApi } from '@/services/api/auth'
 import { useQuery } from '@tanstack/react-query'
 import { ReactNode, createContext, useContext } from 'react'
 
@@ -12,7 +12,7 @@ const AppContext = createContext<AppContext | undefined>(undefined)
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const { data } = useQuery({
     queryKey: ['user'],
-    queryFn: getUser,
+    queryFn: getUserApi,
     retry: false,
   })
 
