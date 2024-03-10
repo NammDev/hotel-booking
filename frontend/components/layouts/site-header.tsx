@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 
 import { marketingConfig } from '@/config/marketing'
@@ -17,15 +19,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { DashboardIcon, ExitIcon, GearIcon } from '@radix-ui/react-icons'
 import { Icons } from '../icons'
+import { useAppContext } from '@/context/AppContext'
 
 export function SiteHeader() {
-  const user = {
-    firstName: 'John',
-    lastName: 'Doe',
-    username: 'johndoe',
-    imageUrl: '',
-    email: 'dichphong@gmail.com',
-  }
+  const { user } = useAppContext()
   const initials = `${user?.firstName?.charAt(0) ?? ''} ${user?.lastName?.charAt(0) ?? ''}`
 
   return (
@@ -45,7 +42,7 @@ export function SiteHeader() {
                 <DropdownMenuTrigger asChild>
                   <Button variant='secondary' className='relative size-8 rounded-full'>
                     <Avatar className='size-8'>
-                      <AvatarImage src={user.imageUrl} alt={user.username ?? ''} />
+                      {/* <AvatarImage src={user.imageUrl} alt={user.username ?? ''} /> */}
                       <AvatarFallback>{initials}</AvatarFallback>
                     </Avatar>
                   </Button>

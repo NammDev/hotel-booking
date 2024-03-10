@@ -1,25 +1,25 @@
-import { validateTokenApi } from '@/services/api/auth'
+import { UserType } from '@/lib/type'
+import { getUser } from '@/services/api/auth'
 import { useQuery } from '@tanstack/react-query'
 import { ReactNode, createContext, useContext } from 'react'
 
 type AppContext = {
-  isLoggedIn: boolean
+  user?: UserType
 }
 
 const AppContext = createContext<AppContext | undefined>(undefined)
 
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
-  // const { isError } = useQuery({
-  //   queryKey: ['validateToken'],
-  //   queryFn: validateTokenApi,
-  //   retry: false,
-  // })
+  const { data } = useQuery({
+    queryKey: ['user'],
+    queryFn: getUser,
+    retry: false,
+  })
 
-  const isError = false
   return (
     <AppContext.Provider
       value={{
-        isLoggedIn: !isError,
+        user: data,
       }}
     >
       {children}

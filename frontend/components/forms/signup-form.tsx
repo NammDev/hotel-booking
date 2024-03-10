@@ -36,7 +36,7 @@ export function SignUpForm() {
         title: 'Sucessfully registered!',
         description: 'Please check your email to verify your account.',
       })
-      // queryClient.invalidateQueries({ queryKey: ['validateToken'] })
+      await queryClient.invalidateQueries({ queryKey: ['user'] })
       router.push('/')
     },
     onError: (error: any) => {

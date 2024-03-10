@@ -28,7 +28,6 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
     sendToken(user, 200, res)
   } catch (error) {
-    console.log(error)
     res.status(500).json({ message: 'Something went wrong!' })
   }
 }

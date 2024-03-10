@@ -21,7 +21,6 @@ export const registrationUser = async (req: Request, res: Response) => {
 
     sendToken(user, 200, res)
   } catch (error) {
-    console.log(error)
     res.status(500).send({ message: 'Server Error Right?' })
   }
 }

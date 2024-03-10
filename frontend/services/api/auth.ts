@@ -1,3 +1,4 @@
+import { UserType } from '@/lib/type'
 import { LoginFormData, RegisterFormData } from '@/lib/validations/auth'
 import axios from 'axios'
 
@@ -29,6 +30,6 @@ export const loginUserApi = async (formData: LoginFormData) => {
   return await axiosInstance.post(`api/auth/login`, formData)
 }
 
-export const validateTokenApi = async () => {
-  return await axiosInstance.get(`api/auth/validate-token`)
+export const getUser = async (): Promise<UserType> => {
+  return (await axiosInstance.get(`api/auth/me`)).data.user
 }

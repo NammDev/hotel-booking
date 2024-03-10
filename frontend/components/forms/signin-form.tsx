@@ -33,7 +33,7 @@ export function SignInForm() {
         title: 'Login successful!',
         description: 'Welcome back!',
       })
-      // await queryClient.invalidateQueries('validateToken')
+      await queryClient.invalidateQueries({ queryKey: ['user'] })
       router.push('/')
     },
     onError: (error: any) => {
