@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { validationResult } from 'express-validator'
-import User from '../models/user.model'
 import { sendToken } from '../utils/jwt'
+import UserModel from '../models/user.model'
 
 export const registrationUser = async (req: Request, res: Response) => {
   try {
@@ -9,14 +9,14 @@ export const registrationUser = async (req: Request, res: Response) => {
     if (!error.isEmpty()) {
       return res.status(400).json({ message: 'Registration error', error: error.array() })
     }
-    let user = await User.findOne({
+    let user = await UserModel.findOne({
       email: req.body.email,
     })
     if (user) {
       return res.status(400).json({ message: 'User already exists' })
     }
 
-    user = new User(req.body)
+    user = new UserModel(req.body)
     await user.save()
 
     sendToken(user, 200, res)

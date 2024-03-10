@@ -1,8 +1,8 @@
 import { sendToken } from './../utils/jwt'
 import { Request, Response, NextFunction } from 'express'
 import { validationResult } from 'express-validator'
-import User from '../models/user.model'
 import { getUserById } from '../services/auth'
+import UserModel from '../models/user.model'
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   // express validator
@@ -15,7 +15,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
   const { email, password } = req.body
   try {
     // check if the user exists
-    const user = await User.findOne({ email })
+    const user = await UserModel.findOne({ email })
     if (!user) {
       return res.status(400).json({ message: 'Can not find this email!' })
     }

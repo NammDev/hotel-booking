@@ -41,8 +41,6 @@ export const isAutheticated = async (req: Request, res: Response, next: NextFunc
     req.userId = decoded.id
     next()
   }
-
-  next()
 }
 
 // export const authorizeRoles = (...roles: string[]) => {
