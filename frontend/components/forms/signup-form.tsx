@@ -21,6 +21,7 @@ import { PasswordInput } from '@/components/password-input'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { registerUserApi } from '@/api/auth'
+import { QueryKeys } from '@/config/query-key'
 
 type FormData = z.infer<typeof authSchema>
 
@@ -36,7 +37,7 @@ export function SignUpForm() {
         title: 'Sucessfully registered!',
         description: 'Please check your email to verify your account.',
       })
-      await queryClient.invalidateQueries({ queryKey: ['user'] })
+      await queryClient.invalidateQueries({ queryKey: [QueryKeys.USER] })
       router.push('/')
     },
     onError: (error: any) => {

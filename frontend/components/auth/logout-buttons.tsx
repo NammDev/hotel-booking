@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from '../ui/use-toast'
 import { logoutApi } from '@/api/auth'
 import { useMounted } from '@/hooks/use-mounted'
+import { QueryKeys } from '@/config/query-key'
 
 export function LogOutButtons() {
   const router = useRouter()
@@ -24,7 +25,7 @@ export function LogOutButtons() {
         title: 'Signout successful!',
         description: 'Goodbye!',
       })
-      await queryClient.invalidateQueries({ queryKey: ['user'] })
+      await queryClient.invalidateQueries({ queryKey: [QueryKeys.USER] })
       router.push(`/`)
     },
     onError: (error: any) => {

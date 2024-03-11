@@ -20,6 +20,7 @@ import { PasswordInput } from '@/components/password-input'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { loginUserApi } from '@/api/auth'
+import { QueryKeys } from '@/config/query-key'
 
 export function SignInForm() {
   const queryClient = useQueryClient()
@@ -33,7 +34,7 @@ export function SignInForm() {
         title: 'Login successful!',
         description: 'Welcome back!',
       })
-      await queryClient.invalidateQueries({ queryKey: ['user'] })
+      await queryClient.invalidateQueries({ queryKey: [QueryKeys.USER] })
       router.push('/')
     },
     onError: (error: any) => {
