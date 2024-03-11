@@ -17,6 +17,6 @@ authRouter.post(
 )
 
 authRouter.get('/me', isAutheticated, getUserInfo)
-authRouter.get('/logout', isAutheticated, logoutUser)
+authRouter.post('/logout', isAutheticated, logoutUser)
 
 export default authRouter

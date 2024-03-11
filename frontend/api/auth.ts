@@ -35,5 +35,5 @@ export const getUserApi = async (): Promise<UserType> => {
 }
 
 export const logoutApi = async () => {
-  return await axiosInstance.get(`api/auth/logout`)
+  return await axiosInstance.post(`api/auth/logout`)
 }
