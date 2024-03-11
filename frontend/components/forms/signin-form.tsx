@@ -19,7 +19,7 @@ import { Icons } from '@/components/icons'
 import { PasswordInput } from '@/components/password-input'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { loginUserApi } from '@/services/api/auth'
+import { loginUserApi } from '@/api/auth'
 
 export function SignInForm() {
   const queryClient = useQueryClient()

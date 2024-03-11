@@ -21,7 +21,7 @@ import { DashboardIcon, ExitIcon, GearIcon } from '@radix-ui/react-icons'
 import { Icons } from '../icons'
 import { UserType } from '@/lib/type'
 import { useQuery } from '@tanstack/react-query'
-import { getUserApi } from '@/services/api/auth'
+import { getUserApi } from '@/api/auth'
 
 export function SiteHeader({ user }: { user: UserType | undefined }) {
   const initials = `${user?.firstName?.charAt(0) ?? ''} ${user?.lastName?.charAt(0) ?? ''}`

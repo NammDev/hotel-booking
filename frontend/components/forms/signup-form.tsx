@@ -20,7 +20,7 @@ import { Icons } from '@/components/icons'
 import { PasswordInput } from '@/components/password-input'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { registerUserApi } from '@/services/api/auth'
+import { registerUserApi } from '@/api/auth'
 
 type FormData = z.infer<typeof authSchema>
 

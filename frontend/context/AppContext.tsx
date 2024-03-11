@@ -1,5 +1,5 @@
 import { UserType } from '@/lib/type'
-import { getUserApi } from '@/services/api/auth'
+import { getUserApi } from '@/api/auth'
 import { useQuery } from '@tanstack/react-query'
 import { ReactNode, createContext, useContext } from 'react'
 

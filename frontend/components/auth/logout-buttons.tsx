@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Icons } from '@/components/icons'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from '../ui/use-toast'
-import { logoutApi } from '@/services/api/auth'
+import { logoutApi } from '@/api/auth'
 import { useMounted } from '@/hooks/use-mounted'
 
 export function LogOutButtons() {
