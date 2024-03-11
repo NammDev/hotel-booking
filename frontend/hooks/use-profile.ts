@@ -1,10 +1,13 @@
 import { getUserApi } from '@/api/auth'
-import { useQuery } from '@tanstack/react-query'
+import { UserType } from '@/lib/type'
+import { UseQueryOptions, useQuery } from '@tanstack/react-query'
 
-export const useProfile = () => {
+type UseProfileQueryOptions = Omit<UseQueryOptions<UserType>, 'queryKey' | 'queryFn'>
+
+export const useProfile = (options?: UseProfileQueryOptions) => {
   return useQuery({
     queryKey: ['user'],
     queryFn: getUserApi,
-    retry: false,
+    ...options,
   })
 }
