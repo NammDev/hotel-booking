@@ -19,12 +19,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { DashboardIcon, ExitIcon, GearIcon } from '@radix-ui/react-icons'
 import { Icons } from '../icons'
-import { UserType } from '@/lib/type'
 import { useProfile } from '@/hooks/use-profile'
 
-export function SiteHeader({ user }: { user: UserType | undefined }) {
+export function SiteHeader() {
+  const { data: user, isLoading, isError } = useProfile()
   const initials = `${user?.firstName?.charAt(0) ?? ''} ${user?.lastName?.charAt(0) ?? ''}`
-  const { isLoading } = useProfile()
 
   return (
     <header className='sticky top-0 z-50 w-full border-b bg-background'>
@@ -42,6 +41,13 @@ export function SiteHeader({ user }: { user: UserType | undefined }) {
               <Avatar className='size-8'>
                 <AvatarFallback>..</AvatarFallback>
               </Avatar>
+            ) : isError ? (
+              <Button size='sm'>
+                <Link href='/signin'>
+                  Sign In
+                  <span className='sr-only'>Sign In</span>
+                </Link>
+              </Button>
             ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
