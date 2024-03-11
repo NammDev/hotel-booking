@@ -31,7 +31,7 @@ export function SignInForm() {
     mutationFn: (data: LoginFormData) => loginUserApi(data),
     onSuccess: async () => {
       toast({
-        title: 'Login successful!',
+        title: 'Login successful 🎉',
         description: 'Welcome back!',
       })
       await queryClient.invalidateQueries({ queryKey: [QueryKeys.USER] })
