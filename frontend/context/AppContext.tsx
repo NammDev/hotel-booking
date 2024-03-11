@@ -1,7 +1,6 @@
 import { UserType } from '@/lib/type'
-import { getUserApi } from '@/api/auth'
-import { useQuery } from '@tanstack/react-query'
 import { ReactNode, createContext, useContext } from 'react'
+import { useProfile } from '@/hooks/use-profile'
 
 type AppContext = {
   user?: UserType
@@ -10,11 +9,7 @@ type AppContext = {
 const AppContext = createContext<AppContext | undefined>(undefined)
 
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
-  const { data } = useQuery({
-    queryKey: ['user'],
-    queryFn: getUserApi,
-    retry: false,
-  })
+  const { data } = useProfile()
 
   return (
     <AppContext.Provider

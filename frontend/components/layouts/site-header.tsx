@@ -20,12 +20,11 @@ import { Button } from '@/components/ui/button'
 import { DashboardIcon, ExitIcon, GearIcon } from '@radix-ui/react-icons'
 import { Icons } from '../icons'
 import { UserType } from '@/lib/type'
-import { useQuery } from '@tanstack/react-query'
-import { getUserApi } from '@/api/auth'
+import { useProfile } from '@/hooks/use-profile'
 
 export function SiteHeader({ user }: { user: UserType | undefined }) {
   const initials = `${user?.firstName?.charAt(0) ?? ''} ${user?.lastName?.charAt(0) ?? ''}`
-  const { isLoading } = useQuery({ queryKey: ['user'], queryFn: getUserApi, retry: false })
+  const { isLoading } = useProfile()
 
   return (
     <header className='sticky top-0 z-50 w-full border-b bg-background'>
