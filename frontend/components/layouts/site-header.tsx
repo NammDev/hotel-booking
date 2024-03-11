@@ -20,9 +20,10 @@ import { Button } from '@/components/ui/button'
 import { DashboardIcon, ExitIcon, GearIcon } from '@radix-ui/react-icons'
 import { Icons } from '../icons'
 import { useProfile } from '@/hooks/use-profile'
+import { UserType } from '@/lib/type'
 
-export function SiteHeader() {
-  const { data: user, isLoading, isError } = useProfile()
+export function SiteHeader({ user }: { user: UserType | undefined }) {
+  const { isLoading, isError } = useProfile()
   const initials = `${user?.firstName?.charAt(0) ?? ''} ${user?.lastName?.charAt(0) ?? ''}`
 
   return (
