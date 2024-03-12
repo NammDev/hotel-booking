@@ -1,5 +1,4 @@
 'use client'
-import { redirect } from 'next/navigation'
 
 import { dashboardConfig } from '@/config/dashboard'
 // import { ScrollArea } from '@/components/ui/scroll-area'
@@ -7,13 +6,21 @@ import { dashboardConfig } from '@/config/dashboard'
 import { SiteFooter } from '@/components/layouts/site-footer'
 import { SiteHeader } from '@/components/layouts/site-header'
 import { useProfile } from '@/hooks/use-profile'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 
 export default function DashboardLayout({ children }: React.PropsWithChildren) {
+  const pathname = usePathname()
+  const router = useRouter()
+
   const { data: user, isLoading, isError } = useProfile()
 
-  if (isError) {
-    redirect('/signin')
-  }
+  useEffect(() => {
+    if (isError) {
+      router.push(`/signin?callbackUrl=${encodeURIComponent(pathname)}`)
+    }
+  }, [isError, pathname, router])
 
   return (
     <div className='flex min-h-screen flex-col'>

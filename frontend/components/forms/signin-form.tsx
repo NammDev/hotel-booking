@@ -17,7 +17,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Icons } from '@/components/icons'
 import { PasswordInput } from '@/components/password-input'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { loginUserApi } from '@/api/auth'
 import { QueryKeys } from '@/config/query-key'
@@ -25,6 +25,7 @@ import { QueryKeys } from '@/config/query-key'
 export function SignInForm() {
   const queryClient = useQueryClient()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   // tanstack query
   const { mutate, isPending } = useMutation({
@@ -35,7 +36,7 @@ export function SignInForm() {
         description: 'Welcome back!',
       })
       await queryClient.invalidateQueries({ queryKey: [QueryKeys.USER] })
-      router.push('/')
+      router.push(searchParams?.get('callbackUrl') || '/')
     },
     onError: (error: any) => {
       toast({
