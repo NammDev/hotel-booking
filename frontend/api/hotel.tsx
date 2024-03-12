@@ -1,8 +1,7 @@
-import { hotelSchema } from '@/components/forms/add-hotel-form'
-import { editHotelSchema } from '@/components/forms/edit-hotel-form'
+import { addHotelSchema } from '@/lib/validations/hotel'
 import { z } from 'zod'
 
-export async function addHotel(input: z.infer<typeof hotelSchema> & { userId: string }) {
+export async function addHotel(input: z.infer<typeof addHotelSchema> & { userId: string }) {
   // try {
   //   const storeWithSameName = await db.query.stores.findFirst({
   //     where: eq(stores.name, input.name),
@@ -29,14 +28,14 @@ export async function addHotel(input: z.infer<typeof hotelSchema> & { userId: st
   // }
 }
 
-export const updateMyHotelById = async (editHotelData: z.infer<typeof editHotelSchema>) => {
-  // const response = await fetch(`${API_BASE_URL}/api/my-hotels/${hotelFormData.get('hotelId')}`, {
-  //   method: 'PUT',
-  //   body: hotelFormData,
-  //   credentials: 'include',
-  // })
-  // if (!response.ok) {
-  //   throw new Error('Failed to update Hotel')
-  // }
-  // return response.json()
-}
+// export const updateMyHotelById = async (editHotelData: z.infer<typeof editHotelSchema>) => {
+// const response = await fetch(`${API_BASE_URL}/api/my-hotels/${hotelFormData.get('hotelId')}`, {
+//   method: 'PUT',
+//   body: hotelFormData,
+//   credentials: 'include',
+// })
+// if (!response.ok) {
+//   throw new Error('Failed to update Hotel')
+// }
+// return response.json()
+// }
