@@ -1,59 +1,97 @@
-import * as React from 'react'
+import Link from 'next/link'
 
 import { siteConfig } from '@/config/site'
 import { cn } from '@/lib/utils'
-import { Icons } from '../icons'
-import { ModeToggle } from './mode-toggle'
-// import { ModeToggle } from '@/components/mode-toggle'
+import { buttonVariants } from '@/components/ui/button'
+import { Icons } from '@/components/icons'
+import { ModeToggle } from '@/components/layouts/mode-toggle'
+import { Shell } from '@/components/shells/shell'
+import { JoinNewsletterForm } from '../forms/join-newsletter-form'
 
-export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
+export function SiteFooter() {
   return (
-    <footer className={cn(className)}>
-      <div className='container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0'>
-        <div className='flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0'>
-          <Icons.logo />
-          <p className='text-center text-sm leading-loose md:text-left'>
+    <footer className='w-full border-t bg-background'>
+      <Shell>
+        <section
+          id='footer-content'
+          aria-labelledby='footer-content-heading'
+          className='flex flex-col gap-10 lg:flex-row lg:gap-20'
+        >
+          <section id='footer-branding' aria-labelledby='footer-branding-heading'>
+            <Link href='/' className='flex w-fit items-center space-x-2'>
+              <Icons.logo className='size-6' aria-hidden='true' />
+              <span className='font-bold'>{siteConfig.name}</span>
+              <span className='sr-only'>Home</span>
+            </Link>
+          </section>
+          <section
+            id='footer-links'
+            aria-labelledby='footer-links-heading'
+            className='grid flex-1 grid-cols-1 gap-10 xxs:grid-cols-2 sm:grid-cols-4'
+          >
+            {siteConfig.footerNav.map((item) => (
+              <div key={item.title} className='space-y-3'>
+                <h4 className='text-base font-medium'>{item.title}</h4>
+                <ul className='space-y-2.5'>
+                  {item.items.map((link) => (
+                    <li key={link.title}>
+                      <Link
+                        href={link.href}
+                        target={link?.external ? '_blank' : undefined}
+                        rel={link?.external ? 'noreferrer' : undefined}
+                        className='text-sm text-muted-foreground transition-colors hover:text-foreground'
+                      >
+                        {link.title}
+                        <span className='sr-only'>{link.title}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+          <section id='newsletter' aria-labelledby='newsletter-heading' className='space-y-3'>
+            <h4 className='text-base font-medium'>Subscribe to our newsletter</h4>
+            <JoinNewsletterForm />
+          </section>
+        </section>
+        <section
+          id='footer-bottom'
+          aria-labelledby='footer-bottom-heading'
+          className='flex items-center space-x-4'
+        >
+          <div className='flex-1 text-left text-sm leading-loose text-muted-foreground'>
             Built by{' '}
-            <a
-              href={siteConfig.links.twitter}
+            <Link
+              href='https://twitter.com/namdeveloper_ca'
               target='_blank'
               rel='noreferrer'
-              className='font-medium underline underline-offset-4'
+              className='font-semibold transition-colors hover:text-foreground'
             >
-              shadcn
-            </a>
-            . Hosted on{' '}
-            <a
-              href='https://vercel.com'
-              target='_blank'
-              rel='noreferrer'
-              className='font-medium underline underline-offset-4'
-            >
-              Vercel
-            </a>
-            . Illustrations by{' '}
-            <a
-              href='https://popsy.co'
-              target='_blank'
-              rel='noreferrer'
-              className='font-medium underline underline-offset-4'
-            >
-              Popsy
-            </a>
-            . The source code is available on{' '}
-            <a
+              nammdev
+              <span className='sr-only'>Twitter</span>
+            </Link>
+            .
+          </div>
+          <div className='flex items-center space-x-1'>
+            <Link
               href={siteConfig.links.github}
               target='_blank'
               rel='noreferrer'
-              className='font-medium underline underline-offset-4'
+              className={cn(
+                buttonVariants({
+                  size: 'icon',
+                  variant: 'ghost',
+                })
+              )}
             >
-              GitHub
-            </a>
-            .
-          </p>
-        </div>
-        <ModeToggle />
-      </div>
+              <Icons.gitHub className='size-4' aria-hidden='true' />
+              <span className='sr-only'>GitHub</span>
+            </Link>
+            <ModeToggle />
+          </div>
+        </section>
+      </Shell>
     </footer>
   )
 }

@@ -51,3 +51,20 @@ export type PaymentIntentResponse = {
   clientSecret: string
   totalCost: number
 }
+
+// fake type of skate
+export type ProductType = {
+  name: string
+  id: number
+  price: string
+  storeId: number
+  inventory: number
+  rating: number
+  description: string | null
+  images: any
+  category: 'skateboards' | 'clothing' | 'shoes' | 'accessories'
+  subcategory: string | null
+  updatedAt: Date | null
+  tags: null
+  createdAt: Date
+}
