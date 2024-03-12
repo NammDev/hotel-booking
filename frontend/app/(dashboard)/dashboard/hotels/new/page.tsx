@@ -10,6 +10,7 @@ import { Shell } from '@/components/shells/shell'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useProfile } from '@/hooks/use-profile'
 import { AddHotelForm } from '@/components/forms/add-hotel-form'
+import EditHotelForm from '@/components/forms/edit-hotel-form'
 
 export default function NewHotelPage() {
   const pathname = usePathname()
@@ -39,7 +40,8 @@ export default function NewHotelPage() {
           <CardDescription>Add a new hotel to your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <AddHotelForm userId={user?._id as string} />
+          {/* <AddHotelForm userId={user?._id as string} /> */}
+          <EditHotelForm />
         </CardContent>
       </Card>
     </Shell>

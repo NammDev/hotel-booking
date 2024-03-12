@@ -28,6 +28,7 @@ import { dashboardConfig } from '@/config/dashboard'
 export function SiteHeader({ user }: { user: UserType | undefined }) {
   const { isLoading, isError } = useProfile()
   const initials = `${user?.firstName?.charAt(0) ?? ''} ${user?.lastName?.charAt(0) ?? ''}`
+  console.log(siteConfig.mainNav)
 
   return (
     <header className='sticky top-0 z-50 w-full border-b bg-background'>

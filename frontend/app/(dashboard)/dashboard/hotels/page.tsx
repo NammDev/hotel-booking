@@ -50,7 +50,7 @@ export default function StoresPage() {
           </PageHeaderHeading>
           <Link
             aria-label='Create store'
-            href={'/dashboard/stores/new'}
+            href={'/dashboard/hotels/new'}
             className={cn(
               buttonVariants({
                 size: 'sm',
