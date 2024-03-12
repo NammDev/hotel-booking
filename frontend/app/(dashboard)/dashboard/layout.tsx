@@ -1,20 +1,20 @@
 'use client'
 
-import { dashboardConfig } from '@/config/dashboard'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+
+import { SidebarNav } from '@/components/layouts/sidebar-nav'
 import { SiteFooter } from '@/components/layouts/site-footer'
 import { SiteHeader } from '@/components/layouts/site-header'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { dashboardConfig } from '@/config/dashboard'
 import { useProfile } from '@/hooks/use-profile'
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { usePathname } from 'next/navigation'
-import { SidebarNav } from '@/components/layouts/sidebar-nav'
 
 export default function DashboardLayout({ children }: React.PropsWithChildren) {
   const pathname = usePathname()
   const router = useRouter()
 
-  const { data: user, isLoading, isError } = useProfile()
+  const { data: user, isError } = useProfile()
 
   useEffect(() => {
     if (isError) {

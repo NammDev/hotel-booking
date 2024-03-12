@@ -1,25 +1,26 @@
-import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
+'use client'
+import { usePathname, useRouter } from 'next/navigation'
+import { Suspense, useEffect } from 'react'
 // import { env } from '@/env.js'
 
 // import { getCacheduser } from '@/lib/actions/auth'
 // import { AddStoreForm } from '@/components/forms/add-store-form'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { PageHeader, PageHeaderDescription, PageHeaderHeading } from '@/components/page-header'
 import { Shell } from '@/components/shells/shell'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useProfile } from '@/hooks/use-profile'
 
-export const metadata: Metadata = {
-  //   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: 'New Hotel',
-  description: 'Add a new hotel',
-}
+export default function NewHotelPage() {
+  const pathname = usePathname()
+  const router = useRouter()
 
-export default async function NewHotelPage() {
-  //   const user = await getCacheduser()
+  const { data: user, isError } = useProfile()
 
-  //   if (!user) {
-  //     redirect('/signin')
-  //   }
+  useEffect(() => {
+    if (isError) {
+      router.push(`/signin?callbackUrl=${encodeURIComponent(pathname)}`)
+    }
+  }, [isError, pathname, router])
 
   return (
     <Shell variant='sidebar'>

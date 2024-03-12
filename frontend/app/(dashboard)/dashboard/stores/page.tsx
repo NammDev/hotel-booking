@@ -1,7 +1,8 @@
-import * as React from 'react'
-import type { Metadata } from 'next'
+'use client'
+
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { Suspense, useEffect } from 'react'
 import { RocketIcon } from '@radix-ui/react-icons'
 // import { env } from '@/env.js'
 
@@ -15,21 +16,20 @@ import { Shell } from '@/components/shells/shell'
 // import { getDashboardRedirectPath, getPlanFeatures } from '@/lib/subscription'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { StoreCardSkeleton } from '@/components/skeletons/store-card-skeleton'
+import { useProfile } from '@/hooks/use-profile'
 // import { StoreCard } from '@/components/cards/store-card'
 
-// export const metadata: Metadata = {
-//   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-//   title: 'Stores',
-//   description: 'Manage your stores',
-// }
+export default function StoresPage() {
+  const pathname = usePathname()
+  const router = useRouter()
 
-export default async function StoresPage() {
-  //   const user = await getCacheduser()
+  const { data: user, isError } = useProfile()
 
-  //   if (!user) {
-  //     redirect('/signin')
-  //   }
-
+  useEffect(() => {
+    if (isError) {
+      router.push(`/signin?callbackUrl=${encodeURIComponent(pathname)}`)
+    }
+  }, [isError, pathname, router])
   //   const userStoresPromise = getUserStores({ userId: user.id })
 
   //   const subscriptionPlanPromise = getSubscriptionPlan({ userId: user.id })
@@ -75,7 +75,7 @@ export default async function StoresPage() {
         </AlertDescription>
       </Alert>
       <section className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-        <React.Suspense
+        <Suspense
           fallback={Array.from({ length: 3 }).map((_, i) => (
             <StoreCardSkeleton key={i} />
           ))}
@@ -86,7 +86,7 @@ export default async function StoresPage() {
           {/* {allStores.map((store) => (
             <StoreCard key={store.id} store={store} href={`/dashboard/stores/${store.id}`} />
           ))} */}
-        </React.Suspense>
+        </Suspense>
       </section>
     </Shell>
   )
