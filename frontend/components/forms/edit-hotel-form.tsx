@@ -14,29 +14,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  UncontrolledFormMessage,
 } from '@/components/ui/form'
-import { CardTitle, CardDescription, CardHeader, CardContent, Card } from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
-
-import { RadioGroupItem, RadioGroup } from '@/components/ui/radio-group'
 import {
-  SelectValue,
-  SelectTrigger,
-  SelectItem,
-  SelectContent,
   Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select'
-
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Icons } from '@/components/icons'
 import { toast } from '../ui/use-toast'
 import { useMutation } from '@tanstack/react-query'
-import { addHotel } from '@/api/hotel'
+import { updateMyHotelById } from '@/api/hotel'
 import Image from 'next/image'
-import { Checkbox } from '../ui/checkbox'
 
-export const hotelSchema = z
+export const editHotelSchema = z
   .object({
     name: z.string().min(3).max(50),
     description: z.string().optional(),
@@ -49,204 +45,228 @@ export const hotelSchema = z
     return true
   })
 
-type Inputs = z.infer<typeof hotelSchema>
+type Inputs = z.infer<typeof editHotelSchema>
 
 export default function EditHotelForm() {
+  const router = useRouter()
+
+  // tanstack query
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: Inputs) => updateMyHotelById(data),
+    onSuccess: async () => {
+      form.reset()
+      toast({ description: 'Hotel edit successfully!' })
+      // router.push('/dashboard/hotels')
+    },
+    onError: (error: any) => {
+      toast({
+        variant: 'destructive',
+        title: error.name,
+        description: error.response.data.message,
+      })
+    },
+  })
+
+  // react-hook-form
+  const form = useForm<Inputs>({
+    resolver: zodResolver(editHotelSchema),
+  })
+
+  async function onSubmit(data: Inputs) {
+    mutate(data)
+  }
+
+  // mock data
+  const products = {
+    category: {
+      enumValues: {
+        hotel: 'hotel',
+        motel: 'motel',
+        resort: 'resort',
+        inn: 'inn',
+        guesthouse: 'guesthouse',
+        bedAndBreakfast: 'bed and breakfast',
+        hostel: 'hostel',
+        apartment: 'apartment',
+        vacationRental: 'vacation rental',
+      },
+    },
+  }
+
+  const subcategories = [
+    { value: 'hotel', label: 'Hotel' },
+    { value: 'motel', label: 'Motel' },
+    { value: 'resort', label: 'Resort' },
+    { value: 'inn', label: 'Inn' },
+    { value: 'guesthouse', label: 'Guesthouse' },
+    { value: 'bedAndBreakfast', label: 'Bed and Breakfast' },
+    { value: 'hostel', label: 'Hostel' },
+    { value: 'apartment', label: 'Apartment' },
+    { value: 'vacationRental', label: 'Vacation Rental' },
+  ]
+
   return (
-    <Form>
-      <form className='grid w-full max-w-xl gap-5'>
-        <div className='grid gap-4'>
-          <div className='grid gap-2'>
-            <Label className='text-base' htmlFor='name'>
-              Name
-            </Label>
-            <Input id='name' placeholder='Enter the name of the hotel' required />
-          </div>
-          <div className='grid gap-2'>
-            <div className='grid gap-2 md:flex md:items-center md:gap-4'>
-              <div className='grid gap-2'>
-                <Label className='text-base' htmlFor='city'>
-                  City
-                </Label>
-                <Input id='city' placeholder='City' />
-              </div>
-              <div className='grid gap-2'>
-                <Label className='text-base' htmlFor='country'>
-                  Country
-                </Label>
-                <Input id='country' placeholder='Country' />
-              </div>
+    <Form {...form}>
+      <form className='grid w-full max-w-xl gap-5' onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
+          name='name'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder='Type hotel name here.' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='description'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea placeholder='Type hotel description here.' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className='flex flex-col items-start gap-6 sm:flex-row'>
+          <FormField
+            control={form.control}
+            name='category'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormLabel>Category</FormLabel>
+                <Select
+                  value={field.value}
+                  onValueChange={(value: typeof field.value) => field.onChange(value)}
+                >
+                  <FormControl>
+                    <SelectTrigger className='capitalize'>
+                      <SelectValue placeholder={field.value} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {Object.values(products.category.enumValues).map((option) => (
+                        <SelectItem key={option} value={option} className='capitalize'>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='subcategory'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormLabel>Subcategory</FormLabel>
+                <Select value={field.value?.toString()} onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder='Select a subcategory' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {subcategories.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className='flex flex-col items-start gap-6 sm:flex-row'>
+          <FormField
+            control={form.control}
+            name='price'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='Type product price here.'
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='inventory'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormLabel>Inventory</FormLabel>
+                <FormControl>
+                  <Input
+                    type='number'
+                    inputMode='numeric'
+                    placeholder='Type product inventory here.'
+                    value={Number.isNaN(field.value) ? '' : field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        {/* <FormItem className='flex w-full flex-col gap-1.5'>
+          <FormLabel>Images</FormLabel>
+          {files?.length ? (
+            <div className='flex items-center gap-2'>
+              {files.map((file, i) => (
+                <Zoom key={i}>
+                  <Image
+                    src={file.preview}
+                    alt={file.name}
+                    className='size-20 shrink-0 rounded-md object-cover object-center'
+                    width={80}
+                    height={80}
+                  />
+                </Zoom>
+              ))}
             </div>
-          </div>
-          <div className='grid gap-2'>
-            <Label className='text-base' htmlFor='description'>
-              Description
-            </Label>
-            <Textarea
-              className='min-h-[100px]'
-              id='description'
-              placeholder='Enter a description'
+          ) : null}
+          <FormControl>
+            <FileDialog
+              setValue={form.setValue}
+              name='images'
+              maxFiles={3}
+              maxSize={1024 * 1024 * 4}
+              files={files}
+              setFiles={setFiles}
+              isUploading={isUploading}
+              disabled={isPending}
             />
-          </div>
-          <div className='grid gap-2'>
-            <Label className='text-base' htmlFor='price'>
-              Price per night ($)
-            </Label>
-            <Input id='price' placeholder='Price' type='number' />
-          </div>
-          <div className='grid gap-2'>
-            <Label className='text-base'>Star rating</Label>
-            <RadioGroup className='flex items-center gap-2' defaultValue='4' id='stars'>
-              <Label
-                className='border cursor-pointer rounded-lg p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800'
-                htmlFor='stars-5'
-              >
-                <RadioGroupItem id='stars-5' value='5' />5 stars
-              </Label>
-              <Label
-                className='border cursor-pointer rounded-lg p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800'
-                htmlFor='stars-4'
-              >
-                <RadioGroupItem id='stars-4' value='4' />4 stars
-              </Label>
-              <Label
-                className='border cursor-pointer rounded-lg p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800'
-                htmlFor='stars-3'
-              >
-                <RadioGroupItem id='stars-3' value='3' />3 stars
-              </Label>
-              <Label
-                className='border cursor-pointer rounded-lg p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800'
-                htmlFor='stars-2'
-              >
-                <RadioGroupItem id='stars-2' value='2' />2 stars
-              </Label>
-              <Label
-                className='border cursor-pointer rounded-lg p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800'
-                htmlFor='stars-1'
-              >
-                <RadioGroupItem id='stars-1' value='1' />1 star
-              </Label>
-            </RadioGroup>
-          </div>
-          <div className='grid gap-2'>
-            <Label className='text-base' htmlFor='type'>
-              Type
-            </Label>
-            <Select>
-              <SelectTrigger className='w-72'>
-                <SelectValue placeholder='Select type' />
-              </SelectTrigger>
-              <SelectContent className='w-72'>
-                <SelectItem value='hotel'>Hotel</SelectItem>
-                <SelectItem value='resort'>Resort</SelectItem>
-                <SelectItem value='inn'>Inn</SelectItem>
-                <SelectItem value='motel'>Motel</SelectItem>
-                <SelectItem value='hostel'>Hostel</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className='grid gap-2'>
-            <Label className='text-base'>Facilities</Label>
-            <div className='flex flex-wrap gap-2 w-full max-w-md'>
-              <div className='flex items-center space-x-2'>
-                <Checkbox id='parking' />
-                <label
-                  htmlFor='parking'
-                  className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
-                >
-                  Parking
-                </label>
-              </div>
-              <div className='flex items-center space-x-2'>
-                <Checkbox id='wifi' />
-                <label
-                  htmlFor='wifi'
-                  className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
-                >
-                  Wifi
-                </label>
-              </div>
-              <div className='flex items-center space-x-2'>
-                <Checkbox id='gym' />
-                <label
-                  htmlFor='gym'
-                  className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
-                >
-                  Gym
-                </label>
-              </div>
-            </div>
-          </div>
-          <div className='grid gap-2'>
-            <div className='grid gap-2 md:flex md:items-center md:gap-4'>
-              <div className='grid gap-2'>
-                <Label className='text-base' htmlFor='adults'>
-                  Adults
-                </Label>
-                <Input defaultValue='1' id='adults' min='1' type='number' />
-              </div>
-              <div className='grid gap-2'>
-                <Label className='text-base' htmlFor='children'>
-                  Children
-                </Label>
-                <Input defaultValue='0' id='children' min='0' type='number' />
-              </div>
-            </div>
-          </div>
-          <div className='grid gap-2'>
-            <Label className='text-base'>Images</Label>
-            <div className='flex items-center gap-4'>
-              <Image
-                alt='Image thumbnail'
-                className='rounded-lg object-cover'
-                height='96'
-                src='/placeholder.svg'
-                style={{
-                  aspectRatio: '96/96',
-                  objectFit: 'cover',
-                }}
-                width='96'
-              />
-              <Image
-                alt='Image thumbnail'
-                className='rounded-lg object-cover'
-                height='96'
-                src='/placeholder.svg'
-                style={{
-                  aspectRatio: '96/96',
-                  objectFit: 'cover',
-                }}
-                width='96'
-              />
-              <Image
-                alt='Image thumbnail'
-                className='rounded-lg object-cover'
-                height='96'
-                src='/placeholder.svg'
-                style={{
-                  aspectRatio: '96/96',
-                  objectFit: 'cover',
-                }}
-                width='96'
-              />
-            </div>
-            <div className='mt-2'>
-              <Input accept='image/*' className='!hidden' id='file' multiple type='file' />
-              <Label
-                className='border-dashed border-2 border-gray-300 rounded-lg cursor-pointer flex w-max items-center gap-2 p-3 text-sm dark:border-gray-700 [&:hover]:bg-gray-100 dark:[&:hover]:bg-gray-800'
-                htmlFor='file'
-              >
-                <Icons.UploadIcon className='w-4 h-4' />
-                Add images
-              </Label>
-              <p className='text-xs text-gray-500 dark:text-gray-400'>JPEG or PNG up to 10MB</p>
-            </div>
-          </div>
-        </div>
-        <div className='flex flex-col md:flex-row md:items-center md:gap-4'>
-          <Button size='lg'>Create Hotel</Button>
-        </div>
+          </FormControl>
+          <UncontrolledFormMessage message={form.formState.errors.images?.message} />
+        </FormItem> */}
+
+        <Button className='w-fit' disabled={isPending}>
+          {isPending && <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />}
+          Edit Hotel
+          <span className='sr-only'>Edit Hotel</span>
+        </Button>
       </form>
     </Form>
   )
