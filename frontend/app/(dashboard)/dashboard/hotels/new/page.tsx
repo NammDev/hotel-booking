@@ -1,6 +1,6 @@
 'use client'
 import { usePathname, useRouter } from 'next/navigation'
-import { Suspense, useEffect } from 'react'
+import { useEffect } from 'react'
 // import { env } from '@/env.js'
 
 // import { getCacheduser } from '@/lib/actions/auth'
@@ -9,6 +9,7 @@ import { PageHeader, PageHeaderDescription, PageHeaderHeading } from '@/componen
 import { Shell } from '@/components/shells/shell'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useProfile } from '@/hooks/use-profile'
+import { AddHotelForm } from '@/components/forms/add-hotel-form'
 
 export default function NewHotelPage() {
   const pathname = usePathname()
@@ -37,7 +38,9 @@ export default function NewHotelPage() {
           <CardTitle className='text-2xl'>Add hotel</CardTitle>
           <CardDescription>Add a new hotel to your account</CardDescription>
         </CardHeader>
-        <CardContent>{/* <AddStoreForm userId={user.id} /> */}</CardContent>
+        <CardContent>
+          <AddHotelForm userId={user?._id as string} />
+        </CardContent>
       </Card>
     </Shell>
   )

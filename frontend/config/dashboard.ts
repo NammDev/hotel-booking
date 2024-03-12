@@ -14,7 +14,7 @@ export const dashboardConfig: DashboardConfig = {
     },
     {
       title: 'Stores',
-      href: '/dashboard/stores',
+      href: '/dashboard/hotels',
       icon: 'store',
       items: [],
     },

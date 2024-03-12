@@ -84,7 +84,7 @@ export default function StoresPage() {
           <StoreCardSkeleton />
           <StoreCardSkeleton />
           {/* {allStores.map((store) => (
-            <StoreCard key={store.id} store={store} href={`/dashboard/stores/${store.id}`} />
+            <StoreCard key={store.id} store={store} href={`/dashboard/hotels/${store.id}`} />
           ))} */}
         </Suspense>
       </section>
