@@ -21,19 +21,21 @@ import { DashboardIcon, ExitIcon, GearIcon } from '@radix-ui/react-icons'
 import { Icons } from '../icons'
 import { useProfile } from '@/hooks/use-profile'
 import { UserType } from '@/lib/type'
+import { MobileNav } from './mobile-nav'
+import { siteConfig } from '@/config/site'
+import { dashboardConfig } from '@/config/dashboard'
 
 export function SiteHeader({ user }: { user: UserType | undefined }) {
   const { isLoading, isError } = useProfile()
   const initials = `${user?.firstName?.charAt(0) ?? ''} ${user?.lastName?.charAt(0) ?? ''}`
 
+  console.log(siteConfig.mainNav[1])
+
   return (
     <header className='sticky top-0 z-50 w-full border-b bg-background'>
       <div className='container flex h-16 items-center'>
-        <MainNav items={marketingConfig.mainNav} />
-        {/* <MobileNav
-            mainNavItems={siteConfig.mainNav}
-            sidebarNavItems={dashboardConfig.sidebarNav}
-          /> */}
+        <MainNav items={siteConfig.mainNav} />
+        <MobileNav mainNavItems={siteConfig.mainNav} sidebarNavItems={dashboardConfig.sidebarNav} />
         <div className='flex flex-1 items-center justify-end space-x-4'>
           <nav className='flex items-center space-x-2'>
             {/* <ProductsCommandMenu />
