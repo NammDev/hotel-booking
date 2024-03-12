@@ -14,7 +14,10 @@ export const getMyHotel = async (req: Request, res: Response) => {
 
 export const createNewHotel = async (req: Request, res: Response) => {
   try {
+    // get file from multer
     const imageFiles = req.files as Express.Multer.File[]
+
+    // upload the images to cloudinary
     const imageUrls = await uploadImages(imageFiles)
 
     // asign data to newHotel
@@ -23,6 +26,7 @@ export const createNewHotel = async (req: Request, res: Response) => {
     newHotel.lastUpdated = new Date()
     newHotel.userId = req.userId as string
 
+    // save hotel and return
     createHotel(newHotel, res)
   } catch (e) {
     console.log(e)
