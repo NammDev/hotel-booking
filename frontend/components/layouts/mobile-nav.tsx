@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from 'react'
 import Link from 'next/link'
 import { useSelectedLayoutSegment } from 'next/navigation'
 import type { MainNavItem, SidebarNavItem } from '@/types'
@@ -18,29 +17,11 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Icons } from '@/components/icons'
+import { useState } from 'react'
 
-interface MobileNavProps {
-  mainNavItems?: MainNavItem[]
-  sidebarNavItems: SidebarNavItem[]
-}
-
-export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
+export function MobileNav({ items }: { items?: MainNavItem[] }) {
   const segment = useSelectedLayoutSegment()
-  const [isOpen, setIsOpen] = React.useState(false)
-
-  const navItems = React.useMemo(() => {
-    const items = mainNavItems ?? []
-    const myAccountItem = {
-      title: 'My Account',
-      items: sidebarNavItems,
-    }
-    const myAccountIndex = items.findIndex((item) => item.title === 'My Account')
-    if (myAccountIndex !== -1) {
-      items.splice(myAccountIndex, 1)
-    }
-    items.splice(1, 0, myAccountItem)
-    return items
-  }, [mainNavItems, sidebarNavItems])
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -65,10 +46,10 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
           <div className='pl-1 pr-7'>
             <Accordion
               type='multiple'
-              defaultValue={navItems.map((item) => item.title)}
+              defaultValue={items?.map((item) => item.title)}
               className='w-full'
             >
-              {navItems?.map((item, index) => (
+              {items?.map((item, index) => (
                 <AccordionItem value={item.title} key={index}>
                   <AccordionTrigger className='text-sm capitalize'>{item.title}</AccordionTrigger>
                   <AccordionContent>

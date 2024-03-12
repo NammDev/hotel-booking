@@ -17,11 +17,7 @@ import {
 } from '@/components/ui/navigation-menu'
 import { Icons } from '@/components/icons'
 
-interface MainNavProps {
-  items?: MainNavItem[]
-}
-
-export function MainNav({ items }: MainNavProps) {
+export function MainNav({ items }: { items?: MainNavItem[] }) {
   return (
     <div className='hidden gap-6 lg:flex'>
       <Link href='/' className='hidden items-center space-x-2 lg:flex'>
