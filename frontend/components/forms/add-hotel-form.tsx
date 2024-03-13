@@ -64,6 +64,7 @@ const subcategories = [
   { value: 'apartment', label: 'Apartment' },
   { value: 'vacationRental', label: 'Vacation Rental' },
 ]
+
 type Inputs = z.infer<typeof addHotelSchema>
 
 export default function AddHotelForm({ userId }: { userId: string }) {
@@ -98,8 +99,8 @@ export default function AddHotelForm({ userId }: { userId: string }) {
     try {
       // mutate(data)
       console.log(data)
-      form.reset()
-      setFiles(null)
+      // form.reset()
+      // setFiles(null)
     } catch (err) {
       console.log(err)
     }
@@ -205,7 +206,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
           />
         </div>
 
-        <div className='flex flex-col items-start gap-6 sm:flex-row'>
+        {/* <div className='flex flex-col items-start gap-6 sm:flex-row'>
           <FormField
             control={form.control}
             name='category'
@@ -261,7 +262,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
               </FormItem>
             )}
           />
-        </div>
+        </div> */}
 
         <FormItem className='flex w-full flex-col gap-1.5'>
           <FormLabel>Images</FormLabel>
@@ -283,7 +284,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
           <FormControl>
             <FileDialog
               setValue={form.setValue}
-              name='images'
+              name='imageFiles'
               maxFiles={3}
               maxSize={1024 * 1024 * 4}
               files={files}
@@ -295,7 +296,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
           <UncontrolledFormMessage message={form.formState.errors.images?.message} />
         </FormItem>
 
-        <Button className='w-fit' disabled={isPending}>
+        <Button type='submit' className='w-fit' disabled={isPending}>
           {isPending && <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />}
           Add Hotel
           <span className='sr-only'>Add Hotel</span>
