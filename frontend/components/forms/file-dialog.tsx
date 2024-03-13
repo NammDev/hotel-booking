@@ -237,10 +237,11 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
           loading='lazy'
         />
         <div className='flex flex-col'>
-          <p className='line-clamp-1 text-sm font-medium text-muted-foreground'>
-            {file.name.slice(0, 45)}
+          <p className='line-clamp-1 text-sm font-medium truncate text-muted-foreground'>
+            {file.name.length > 35 ? `${file.name.slice(0, 32)}...` : file.name}
+            {/* {file.name.slice(0, 45)} */}
           </p>
-          <p className='text-xs text-slate-500'>{(file.size / 1024 / 1024).toFixed(2)}MB</p>
+          <p className='text-xs   text-slate-500'>{(file.size / 1024 / 1024).toFixed(2)}MB</p>
         </div>
       </div>
       <div className='flex items-center gap-2'>
