@@ -2,13 +2,18 @@ import { createHotel } from './../services/hotel'
 import { Request, Response } from 'express'
 import { uploadImages } from '../services/hotel'
 import { HotelType } from '../shared/types'
+import HotelModel from '../models/hotel.model'
 
 export const getMyHotel = async (req: Request, res: Response) => {
   try {
-    // const hotels = await Hotel.find({ userId: req.userId })
-    // res.json(hotels)
+    const hotels = await HotelModel.find({ userId: req.userId })
+
+    // const hotels = await HotelModel.find({ userId: req.userId }).select(
+    //   '-hotelData.name -hotelData.description'
+    // )
+    res.json(hotels)
   } catch (error) {
-    // res.status(500).json({ message: 'Error fetching hotels' })
+    res.status(500).json({ message: 'Error fetching hotels' })
   }
 }
 
