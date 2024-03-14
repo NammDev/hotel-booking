@@ -7,13 +7,10 @@ export async function uploadImages(imageFiles: Express.Multer.File[]) {
   const uploadPromises = imageFiles.map(async (image) => {
     // encode the image: convert Buffer to base64
     const b64 = Buffer.from(image.buffer).toString('base64')
-
     // attach type of image
     let dataURI = 'data:' + image.mimetype + ';base64,' + b64
-
     // upload to cloudinary
     const res = await cloudinary.v2.uploader.upload(dataURI)
-
     // get the url of the image
     return res.url
   })

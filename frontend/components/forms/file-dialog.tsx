@@ -1,14 +1,21 @@
-import * as React from 'react'
-import type { FileWithPreview } from '@/types'
+import {
+  Dispatch,
+  HTMLAttributes,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import Cropper, { type ReactCropperElement } from 'react-cropper'
 import { useDropzone, type Accept, type FileRejection, type FileWithPath } from 'react-dropzone'
 import type { FieldPath, FieldValues, Path, PathValue, UseFormSetValue } from 'react-hook-form'
+import { CropIcon, Cross2Icon, ResetIcon, TrashIcon, UploadIcon } from '@radix-ui/react-icons'
+import Image from 'next/image'
 
 import 'cropperjs/dist/cropper.css'
 
-import Image from 'next/image'
-import { CropIcon, Cross2Icon, ResetIcon, TrashIcon, UploadIcon } from '@radix-ui/react-icons'
-
+import type { FileWithPreview } from '@/types'
 import { cn, formatBytes } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
@@ -19,14 +26,14 @@ import { toast } from '../ui/use-toast'
 interface FileDialogProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-> extends React.HTMLAttributes<HTMLDivElement> {
+> extends HTMLAttributes<HTMLDivElement> {
   name: TName
   setValue: UseFormSetValue<TFieldValues>
   accept?: Accept
   maxSize?: number
   maxFiles?: number
   files: FileWithPreview[] | null
-  setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[] | null>>
+  setFiles: Dispatch<SetStateAction<FileWithPreview[] | null>>
   isUploading?: boolean
   disabled?: boolean
 }
@@ -46,7 +53,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
   className,
   ...props
 }: FileDialogProps<TFieldValues>) {
-  const onDrop = React.useCallback(
+  const onDrop = useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
       acceptedFiles.forEach((file) => {
         const fileWithPreview = Object.assign(file, {
@@ -74,7 +81,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
   )
 
   // Register files to react-hook-form
-  React.useEffect(() => {
+  useEffect(() => {
     setValue(name, files as PathValue<TFieldValues, Path<TFieldValues>>)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files])
@@ -89,7 +96,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
   })
 
   // Revoke preview url when component unmounts
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       if (!files) return
       files.forEach((file) => URL.revokeObjectURL(file.preview))
@@ -106,9 +113,11 @@ export function FileDialog<TFieldValues extends FieldValues>({
         </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[480px]'>
+        {/* Header */}
         <p className='absolute left-5 top-4 text-base font-medium text-muted-foreground'>
           Upload your images
         </p>
+
         <div
           {...getRootProps()}
           className={cn(
@@ -151,6 +160,8 @@ export function FileDialog<TFieldValues extends FieldValues>({
         <p className='text-center text-sm font-medium text-muted-foreground'>
           You can upload up to {maxFiles} {maxFiles === 1 ? 'file' : 'files'}
         </p>
+
+        {/* File Card */}
         {files?.length ? (
           <div className='grid gap-5'>
             {files?.map((file, i) => (
@@ -158,6 +169,8 @@ export function FileDialog<TFieldValues extends FieldValues>({
             ))}
           </div>
         ) : null}
+
+        {/* Button Remove All File */}
         {files?.length ? (
           <Button
             type='button'
@@ -180,15 +193,15 @@ interface FileCardProps {
   i: number
   file: FileWithPreview
   files: FileWithPreview[] | null
-  setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[] | null>>
+  setFiles: Dispatch<SetStateAction<FileWithPreview[] | null>>
 }
 
 function FileCard({ i, file, files, setFiles }: FileCardProps) {
-  const [isOpen, setIsOpen] = React.useState(false)
-  const [cropData, setCropData] = React.useState<string | null>(null)
-  const cropperRef = React.useRef<ReactCropperElement>(null)
+  const [isOpen, setIsOpen] = useState(false)
+  const [cropData, setCropData] = useState<string | null>(null)
+  const cropperRef = useRef<ReactCropperElement>(null)
 
-  const onCrop = React.useCallback(() => {
+  const onCrop = useCallback(() => {
     if (!files || !cropperRef.current) return
 
     const croppedCanvas = cropperRef.current?.cropper.getCroppedCanvas()
@@ -214,7 +227,7 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
     })
   }, [file.name, file.type, files, i, setFiles])
 
-  React.useEffect(() => {
+  useEffect(() => {
     function handleKeydown(e: KeyboardEvent) {
       if (e.key === 'Enter') {
         onCrop()

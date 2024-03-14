@@ -143,9 +143,10 @@ export default function AddHotelForm({ userId }: { userId: string }) {
   const { mutate, isPending } = useMutation({
     mutationFn: (data: Inputs) => addHotel(data),
     onSuccess: async () => {
+      setFiles(null)
       form.reset()
       toast({ description: 'Hotel add successfully!' })
-      // router.push('/dashboard/hotels')
+      router.push('/dashboard/hotels')
     },
     onError: (error: any) => {
       toast({
@@ -166,12 +167,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
 
   async function onSubmit(data: Inputs) {
     try {
-      console.log(data)
-      // mutate(data)
-      // setFiles(null)
-      // form.reset()
-      // toast({ description: 'Hotel add successfully!' })
-      // router.push('/dashboard/hotels')
+      mutate(data)
     } catch (err) {
       console.log(err)
     }

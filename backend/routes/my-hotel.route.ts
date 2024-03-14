@@ -1,6 +1,6 @@
 import express from 'express'
 import { isAutheticated } from '../middleware/auth'
-import { createNewHotel, getMyHotel } from '../controllers/my-hotel.controller'
+import { createNewHotel } from '../controllers/my-hotel.controller'
 import multer from 'multer'
 
 const myHotelRouter = express.Router()
