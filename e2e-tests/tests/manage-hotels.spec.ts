@@ -20,16 +20,20 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('should allow user to add a hotel', async ({ page }) => {
-  await page.goto(`${UI_URL}add-hotel`)
+  await page.goto(`${UI_URL}dashboard/hotels/new`)
 
   await page.locator('[name="name"]').fill('Test Hotel')
   await page.locator('[name="city"]').fill('Test City')
   await page.locator('[name="country"]').fill('Test Country')
-  await page.locator('[name="description"]').fill('This is a description for the Test Hotel')
+  await page
+    .locator('textarea[name="description"]')
+    .fill('This is a description for the Test Hotel')
   await page.locator('[name="pricePerNight"]').fill('100')
-  await page.selectOption('select[name="starRating"]', '3')
+  // await page.selectOption('select[name="starRating"]', '3')
+  await page.locator('[name="starRating"]').fill('3')
 
-  await page.getByText('Budget').click()
+  // await page.getByText('Budget').click()
+  await page.selectOption('select[name="type"]', 'hotel')
 
   await page.getByLabel('Free Wifi').check()
   await page.getByLabel('Parking').check()
@@ -37,13 +41,17 @@ test('should allow user to add a hotel', async ({ page }) => {
   await page.locator('[name="adultCount"]').fill('2')
   await page.locator('[name="childCount"]').fill('4')
 
+  await page.getByRole('button', { name: 'Upload Images' }).click()
+
   await page.setInputFiles('[name="imageFiles"]', [
     path.join(__dirname, 'files', '1.png'),
     path.join(__dirname, 'files', '2.png'),
   ])
 
-  await page.getByRole('button', { name: 'Save' }).click()
-  await expect(page.getByText('Hotel Saved!')).toBeVisible()
+  await page.keyboard.press('Escape')
+
+  await page.getByRole('button', { name: 'Add Hotel' }).click()
+  await expect(page.getByText('Hotel add successfully!').nth(0)).toBeVisible()
 })
 
 // test('should display hotels', async ({ page }) => {

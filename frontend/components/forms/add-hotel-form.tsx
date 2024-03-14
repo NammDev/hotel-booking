@@ -243,6 +243,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
                   <Input
                     type='number'
                     inputMode='numeric'
+                    name='pricePerNight'
                     placeholder='$ Price!'
                     value={Number.isNaN(field.value) ? '' : field.value}
                     onChange={(e) => field.onChange(e.target.valueAsNumber)}
@@ -262,6 +263,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
                   <Input
                     type='number'
                     inputMode='numeric'
+                    name='starRating'
                     placeholder='Star Rating'
                     value={Number.isNaN(field.value) ? '' : field.value}
                     onChange={(e) => field.onChange(e.target.valueAsNumber)}
@@ -281,6 +283,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
               <FormItem className='w-full'>
                 <FormLabel>Type</FormLabel>
                 <Select
+                  name='type'
                   value={field.value}
                   onValueChange={(value: typeof field.value) => field.onChange(value)}
                 >
@@ -397,6 +400,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
                   <Input
                     type='number'
                     inputMode='numeric'
+                    name='adultCount'
                     min={1}
                     placeholder='Adults Count'
                     value={Number.isNaN(field.value) ? '' : field.value}
@@ -418,6 +422,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
                     min={0}
                     type='number'
                     inputMode='numeric'
+                    name='childCount'
                     placeholder='Childrens Count'
                     value={Number.isNaN(field.value) ? '' : field.value}
                     onChange={(e) => field.onChange(e.target.valueAsNumber)}

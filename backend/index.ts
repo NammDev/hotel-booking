@@ -1,10 +1,12 @@
-import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import { rateLimit } from 'express-rate-limit'
+import express, { Request, Response } from 'express'
+import path from 'path'
 
 import 'dotenv/config'
+
 import userRouter from './routes/user.route'
 import authRouter from './routes/auth.route'
 import { v2 as cloudinary } from 'cloudinary'
@@ -44,6 +46,8 @@ const limiter = rateLimit({
   standardHeaders: 'draft-7',
   legacyHeaders: false,
 })
+
+app.use(express.static(path.join(__dirname, '../../frontend/dist')))
 
 app.use('/api/users', userRouter)
 app.use('/api/auth', authRouter)

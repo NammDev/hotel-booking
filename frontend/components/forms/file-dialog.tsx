@@ -129,7 +129,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
           )}
           {...props}
         >
-          <input {...getInputProps()} />
+          <input {...getInputProps()} name={name} />
           {isUploading ? (
             <div className='group grid w-full place-items-center gap-1 sm:px-10'>
               <UploadIcon
