@@ -19,3 +19,11 @@ export const axiosInstance = axios.create({
     },
   ],
 })
+
+export const axiosInstanceForm = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
+  withCredentials: true,
+})

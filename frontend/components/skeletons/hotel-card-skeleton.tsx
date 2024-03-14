@@ -2,7 +2,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio'
 import { Card, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export function StoreCardSkeleton() {
+export function HotelCardSkeleton() {
   return (
     <Card className='h-full overflow-hidden'>
       <AspectRatio ratio={21 / 9}>

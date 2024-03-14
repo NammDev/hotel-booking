@@ -15,8 +15,12 @@ import { Shell } from '@/components/shells/shell'
 // import { getSubscriptionPlan } from '@/lib/fetchers/stripe'
 // import { getDashboardRedirectPath, getPlanFeatures } from '@/lib/subscription'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { StoreCardSkeleton } from '@/components/skeletons/store-card-skeleton'
+import { HotelCardSkeleton } from '@/components/skeletons/hotel-card-skeleton'
 import { useProfile } from '@/hooks/use-profile'
+import { useQuery } from '@tanstack/react-query'
+import { fetchMyHotels } from '@/api/hotel'
+import { QueryKeys } from '@/config/query-key'
+import { HotelType } from '@/lib/type'
 // import { StoreCard } from '@/components/cards/store-card'
 
 export default function StoresPage() {
@@ -30,16 +34,17 @@ export default function StoresPage() {
       router.push(`/signin?callbackUrl=${encodeURIComponent(pathname)}`)
     }
   }, [isError, pathname, router])
-  //   const userStoresPromise = getUserStores({ userId: user.id })
 
-  //   const subscriptionPlanPromise = getSubscriptionPlan({ userId: user.id })
+  const { data: hotelData } = useQuery({
+    queryKey: [QueryKeys.MYHOTELS, { userId: user?._id }],
+    queryFn: fetchMyHotels,
+  })
 
-  //   const [allStores, subscriptionPlan] = await Promise.all([
-  //     userStoresPromise,
-  //     subscriptionPlanPromise,
-  //   ])
+  console.log(hotelData, 'hotelData')
 
-  //   const { maxStoreCount, maxProductCount } = getPlanFeatures(subscriptionPlan?.id)
+  if (!hotelData) {
+    return <span>No Hotels found</span>
+  }
 
   return (
     <Shell variant='sidebar'>
@@ -77,12 +82,12 @@ export default function StoresPage() {
       <section className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
         <Suspense
           fallback={Array.from({ length: 3 }).map((_, i) => (
-            <StoreCardSkeleton key={i} />
+            <HotelCardSkeleton key={i} />
           ))}
         >
-          <StoreCardSkeleton />
-          <StoreCardSkeleton />
-          <StoreCardSkeleton />
+          <HotelCardSkeleton />
+          <HotelCardSkeleton />
+          <HotelCardSkeleton />
           {/* {allStores.map((store) => (
             <StoreCard key={store.id} store={store} href={`/dashboard/hotels/${store.id}`} />
           ))} */}

@@ -1,6 +1,6 @@
 import { addHotelSchema } from '@/lib/validations/hotel'
 import { z } from 'zod'
-import { axiosInstance } from '.'
+import { axiosInstance, axiosInstanceForm } from '.'
 import axios from 'axios'
 
 export async function addHotel(formDataJson: z.infer<typeof addHotelSchema>) {
@@ -39,11 +39,30 @@ export async function addHotel(formDataJson: z.infer<typeof addHotelSchema>) {
     formData.append(`imageFiles`, imageFile)
   })
 
-  console.log(formData.forEach((value, key) => console.log(key, value)))
+  return await axiosInstanceForm.post('/api/my-hotels', formData)
+}
 
-  return await axios.post(`http://localhost:3001/api/my-hotels`, formData, {
-    withCredentials: true,
-  })
+// export const fetchMyHotels = async (): Promise<HotelType[]> => {
+//   const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
+//     credentials: 'include',
+//   })
+
+//   if (!response.ok) {
+//     throw new Error('Error fetching hotels')
+//   }
+
+//   return response.json()
+// }
+
+export const fetchMyHotels = async () => {
+  return await axiosInstance.get('/api/my-hotels')
+  // const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
+  //   credentials: 'include',
+  // })
+  // if (!response.ok) {
+  //   throw new Error('Error fetching hotels')
+  // }
+  // return response.json()
 }
 
 // export const updateMyHotelById = async (editHotelData: z.infer<typeof editHotelSchema>) => {
