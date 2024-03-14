@@ -9,14 +9,16 @@ export const addHotelSchema = z
     city: z.string().min(3).max(50),
     country: z.string().min(3).max(50),
     description: z.string().optional(),
-    // type: z.string().min(3).max(50),
+    type: z.string().min(3).max(50),
     pricePerNight: z.number().positive(),
     starRating: z.number().min(1).max(5),
-    // facilities: z.array(z.string()),
+    facilities: z.array(z.string()).refine((value) => value.some((item) => item), {
+      message: 'You have to select at least one item.',
+    }),
     imageFiles: z.unknown(),
-    // imageUrls: z.array(z.string()),
-    // adultCount: z.number().positive(),
-    // childCount: z.number().positive(),
+    adultCount: z.number().positive(),
+    childCount: z.number().positive(),
+    // imageUrls: z.array(z.string()), this is for edit hotel
   })
   .refine((data) => {
     if (!data.slug) {

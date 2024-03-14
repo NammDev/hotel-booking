@@ -14,6 +14,7 @@ import {
   FormLabel,
   FormMessage,
   UncontrolledFormMessage,
+  FormDescription,
 } from '@/components/ui/form'
 import {
   Select,
@@ -23,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Icons } from '@/components/icons'
@@ -35,6 +37,7 @@ import { FileDialog } from './file-dialog'
 import { useState } from 'react'
 import { FileWithPreview } from '@/types'
 import { addHotelSchema } from '@/lib/validations/hotel'
+import Link from 'next/link'
 
 // mock data
 const products = {
@@ -65,6 +68,69 @@ const subcategories = [
   { value: 'vacationRental', label: 'Vacation Rental' },
 ]
 
+const facilities = [
+  {
+    id: 'freeWifi',
+    label: 'Free WiFi',
+  },
+  {
+    id: 'parking',
+    label: 'Parking',
+  },
+  {
+    id: 'pool',
+    label: 'Pool',
+  },
+  {
+    id: 'gym',
+    label: 'Gym',
+  },
+  {
+    id: 'restaurant',
+    label: 'Restaurant',
+  },
+  {
+    id: 'spa',
+    label: 'Spa',
+  },
+  {
+    id: 'roomService',
+    label: 'Room Service',
+  },
+  {
+    id: 'bar',
+    label: 'Bar',
+  },
+  {
+    id: 'laundry',
+    label: 'Laundry',
+  },
+  {
+    id: 'fitnessCenter',
+    label: 'Fitness Center',
+  },
+  {
+    id: 'conferenceRoom',
+    label: 'Conference',
+  },
+  {
+    id: 'facility1',
+    label: 'Facility 1',
+  },
+  {
+    id: 'facility2',
+    label: 'Facility 2',
+  },
+  {
+    id: 'facility3',
+    label: 'Facility 3',
+  },
+  {
+    id: 'facility4',
+    label: 'Facility 4',
+  },
+]
+
 type Inputs = z.infer<typeof addHotelSchema>
 
 export default function AddHotelForm({ userId }: { userId: string }) {
@@ -93,6 +159,9 @@ export default function AddHotelForm({ userId }: { userId: string }) {
   // react-hook-form
   const form = useForm<Inputs>({
     resolver: zodResolver(addHotelSchema),
+    defaultValues: {
+      facilities: ['freeWifi'],
+    },
   })
 
   async function onSubmit(data: Inputs) {
@@ -206,20 +275,20 @@ export default function AddHotelForm({ userId }: { userId: string }) {
           />
         </div>
 
-        {/* <div className='flex flex-col items-start gap-6 sm:flex-row'>
+        <div className='flex flex-col items-start gap-6 sm:flex-row'>
           <FormField
             control={form.control}
-            name='category'
+            name='type'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Category</FormLabel>
+                <FormLabel>Type</FormLabel>
                 <Select
                   value={field.value}
                   onValueChange={(value: typeof field.value) => field.onChange(value)}
                 >
                   <FormControl>
                     <SelectTrigger className='capitalize'>
-                      <SelectValue placeholder={field.value} />
+                      <SelectValue placeholder='Please choose a Type of your hotel' />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -232,11 +301,15 @@ export default function AddHotelForm({ userId }: { userId: string }) {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+                <FormDescription>
+                  You can manage email addresses in your{' '}
+                  <Link href='/examples/forms'>email settings</Link>.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
+          {/* <FormField
             control={form.control}
             name='subcategory'
             render={({ field }) => (
@@ -261,8 +334,100 @@ export default function AddHotelForm({ userId }: { userId: string }) {
                 <FormMessage />
               </FormItem>
             )}
+          /> */}
+        </div>
+
+        <div className='flex flex-col items-start gap-6 sm:flex-row'>
+          <FormField
+            control={form.control}
+            name='facilities'
+            render={() => (
+              <FormItem className='w-full mb-4'>
+                <div className='mb-4'>
+                  <FormLabel className='text-base'>Facilities</FormLabel>
+                  <FormDescription>
+                    Select the facility you want to add to your hotel.
+                  </FormDescription>
+                </div>
+                <div className='grid grid-cols-2 lg:grid-cols-3 gap-4 w-full'>
+                  {facilities.map((facility) => (
+                    <FormField
+                      key={facility.id}
+                      control={form.control}
+                      name='facilities'
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={facility.id}
+                            className='flex flex-row items-start space-x-3 space-y-0 col-span-1'
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(facility.id)}
+                                onCheckedChange={(checked) => {
+                                  return checked
+                                    ? field.onChange([...field.value, facility.id])
+                                    : field.onChange(
+                                        field.value?.filter((value) => value !== facility.id)
+                                      )
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className='text-sm font-normal hover:cursor-pointer'>
+                              {facility.label}
+                            </FormLabel>
+                          </FormItem>
+                        )
+                      }}
+                    />
+                  ))}
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div> */}
+        </div>
+
+        <div className='flex flex-col items-start gap-6 sm:flex-row '>
+          <FormField
+            name='adultCount'
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormLabel>Adults</FormLabel>
+                <FormControl>
+                  <Input
+                    type='number'
+                    inputMode='numeric'
+                    placeholder='Adults Count'
+                    value={Number.isNaN(field.value) ? '' : field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name='childCount'
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormLabel>Childrens</FormLabel>
+                <FormControl>
+                  <Input
+                    type='number'
+                    inputMode='numeric'
+                    placeholder='Childrens Count'
+                    value={Number.isNaN(field.value) ? '' : field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormItem className='flex w-full flex-col gap-1.5'>
           <FormLabel>Images</FormLabel>
@@ -293,7 +458,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
               disabled={isPending}
             />
           </FormControl>
-          <UncontrolledFormMessage message={form.formState.errors.images?.message} />
+          {/* <UncontrolledFormMessage message={form.formState.errors.images?.message} /> */}
         </FormItem>
 
         <Button type='submit' className='w-fit' disabled={isPending}>
