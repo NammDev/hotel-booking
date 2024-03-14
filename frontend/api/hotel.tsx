@@ -1,7 +1,9 @@
 import { addHotelSchema } from '@/lib/validations/hotel'
 import { z } from 'zod'
+import { axiosInstance } from '.'
 
-export async function addHotel(input: z.infer<typeof addHotelSchema> & { userId: string }) {
+export async function addHotel(formData: z.infer<typeof addHotelSchema>) {
+  return await axiosInstance.post(`api/my-hotels`, formData)
   // try {
   //   const storeWithSameName = await db.query.stores.findFirst({
   //     where: eq(stores.name, input.name),

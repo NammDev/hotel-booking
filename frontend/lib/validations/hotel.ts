@@ -15,7 +15,16 @@ export const addHotelSchema = z
     facilities: z.array(z.string()).refine((value) => value.some((item) => item), {
       message: 'You have to select at least one item.',
     }),
-    imageFiles: z.unknown(),
+    imageFiles: z
+      .unknown()
+      .refine((val) => {
+        if (!Array.isArray(val)) return false
+        if (val.some((file) => !(file instanceof File))) return false
+        return true
+      }, 'Must be an array of File')
+      .optional()
+      .nullable()
+      .default(null),
     adultCount: z.number().positive(),
     childCount: z.number().positive(),
     // imageUrls: z.array(z.string()), this is for edit hotel

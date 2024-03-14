@@ -141,7 +141,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
 
   // tanstack query
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: Inputs) => addHotel({ ...data, userId }),
+    mutationFn: (data: Inputs) => addHotel(data),
     onSuccess: async () => {
       form.reset()
       toast({ description: 'Hotel add successfully!' })
@@ -166,10 +166,12 @@ export default function AddHotelForm({ userId }: { userId: string }) {
 
   async function onSubmit(data: Inputs) {
     try {
-      // mutate(data)
       console.log(data)
-      // form.reset()
+      // mutate(data)
       // setFiles(null)
+      // form.reset()
+      // toast({ description: 'Hotel add successfully!' })
+      // router.push('/dashboard/hotels')
     } catch (err) {
       console.log(err)
     }
@@ -399,6 +401,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
                   <Input
                     type='number'
                     inputMode='numeric'
+                    min={1}
                     placeholder='Adults Count'
                     value={Number.isNaN(field.value) ? '' : field.value}
                     onChange={(e) => field.onChange(e.target.valueAsNumber)}
@@ -416,6 +419,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
                 <FormLabel>Childrens</FormLabel>
                 <FormControl>
                   <Input
+                    min={0}
                     type='number'
                     inputMode='numeric'
                     placeholder='Childrens Count'
@@ -450,7 +454,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
             <FileDialog
               setValue={form.setValue}
               name='imageFiles'
-              maxFiles={3}
+              maxFiles={6}
               maxSize={1024 * 1024 * 4}
               files={files}
               setFiles={setFiles}
@@ -458,7 +462,7 @@ export default function AddHotelForm({ userId }: { userId: string }) {
               disabled={isPending}
             />
           </FormControl>
-          {/* <UncontrolledFormMessage message={form.formState.errors.images?.message} /> */}
+          <UncontrolledFormMessage message={form.formState.errors.imageFiles?.message} />
         </FormItem>
 
         <Button type='submit' className='w-fit' disabled={isPending}>
