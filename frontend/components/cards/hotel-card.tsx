@@ -14,7 +14,7 @@ interface HotelCardProps {
 
 export function HotelCard({ hotel, href }: HotelCardProps) {
   return (
-    <Link href={href}>
+    <Link href={href} aria-label='hotelCard'>
       <span className='sr-only'>{hotel.name}</span>
       <Card className='h-full overflow-hidden transition-colors hover:bg-muted/50'>
         <AspectRatio ratio={21 / 9}>
