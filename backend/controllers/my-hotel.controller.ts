@@ -6,7 +6,10 @@ import HotelModel from '../models/hotel.model'
 
 export const getMyHotels = async (req: Request, res: Response) => {
   try {
-    const hotels = await HotelModel.find({ userId: req.userId }, { name: 1, description: 1 })
+    const hotels = await HotelModel.find(
+      { userId: req.userId },
+      { name: 1, description: 1, imageUrls: 1 }
+    )
     res.json(hotels)
   } catch (error) {
     res.status(500).json({ message: 'Error fetching hotels' })

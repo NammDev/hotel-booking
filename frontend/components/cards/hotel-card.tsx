@@ -37,8 +37,9 @@ export function HotelCard({ hotel, href }: HotelCardProps) {
             {store.stripeAccountId ? 'Active' : 'Inactive'}
           </Badge> */}
           <div
-            className='h-full rounded-t-md border-b'
-            style={getRandomPatternStyle(String(hotel._id))}
+            className='h-full rounded-t-md border-b bg-no-repeat bg-center bg-cover bg-zinc-900/50'
+            style={{ backgroundImage: `url(${hotel.imageUrls[0]})` }}
+            // style={getRandomPatternStyle(String(hotel._id))}
           />
         </AspectRatio>
         <CardHeader className='space-y-2'>

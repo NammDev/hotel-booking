@@ -10,6 +10,7 @@ export type HotelCardType = {
   _id: string
   name: string
   description: string
+  imageUrls: string[]
 }
 
 export type HotelType = {
