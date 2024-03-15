@@ -15,7 +15,7 @@ import { useProfile } from '@/hooks/use-profile'
 import { useQuery } from '@tanstack/react-query'
 import { fetchMyHotels } from '@/api/hotel'
 import { QueryKeys } from '@/config/query-key'
-import { HotelType } from '@/lib/type'
+import { HotelCardType } from '@/lib/type'
 import { HotelCard } from '@/components/cards/hotel-card'
 
 export default function HotelsPage() {
@@ -75,7 +75,7 @@ export default function HotelsPage() {
             <HotelCardSkeleton key={i} />
           ))}
         >
-          {hotelData.data.map((hotel: HotelType) => (
+          {hotelData.data.map((hotel: HotelCardType) => (
             <HotelCard key={hotel._id} hotel={hotel} href={`/dashboard/hotels/${hotel._id}`} />
           ))}
         </Suspense>

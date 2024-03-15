@@ -6,6 +6,12 @@ export type UserType = {
   lastName: string
 }
 
+export type HotelCardType = {
+  _id: string
+  name: string
+  description: string
+}
+
 export type HotelType = {
   _id: string
   userId: string

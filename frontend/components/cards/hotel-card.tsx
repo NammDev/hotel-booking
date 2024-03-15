@@ -5,10 +5,10 @@ import { cn } from '@/lib/utils'
 import { AspectRatio } from '@/components/ui/aspect-ratio'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { HotelType } from '@/lib/type'
+import { HotelCardType } from '@/lib/type'
 
 interface HotelCardProps {
-  hotel: HotelType
+  hotel: HotelCardType
   href: string
 }
 
