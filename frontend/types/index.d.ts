@@ -5,7 +5,7 @@ import { type z } from 'zod'
 
 import { type userPrivateMetadataSchema } from '@/lib/validations/auth'
 import type { cartItemSchema, cartLineItemSchema, checkoutItemSchema } from '@/lib/validations/cart'
-import type { Icons } from '@/components/icons'
+import type { Icons } from '@/components/my-ui/icons'
 
 export interface NavItem {
   title: string

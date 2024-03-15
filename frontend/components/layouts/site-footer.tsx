@@ -3,9 +3,9 @@ import Link from 'next/link'
 import { siteConfig } from '@/config/site'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
-import { Icons } from '@/components/icons'
+import { Icons } from '@/components/my-ui/icons'
 import { ModeToggle } from '@/components/layouts/mode-toggle'
-import { Shell } from '@/components/shells/shell'
+import { Shell } from '@/components/shells'
 import { JoinNewsletterForm } from '../forms/join-newsletter-form'
 
 export function SiteFooter() {

@@ -7,7 +7,7 @@ import { ChevronLeftIcon } from '@radix-ui/react-icons'
 
 import { cn } from '@/lib/utils'
 
-import { Icons } from '../icons'
+import { Icons } from '../my-ui/icons'
 
 export interface SidebarNavProps extends React.HTMLAttributes<HTMLDivElement> {
   items: SidebarNavItem[]

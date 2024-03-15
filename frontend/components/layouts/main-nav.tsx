@@ -15,7 +15,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
-import { Icons } from '@/components/icons'
+import { Icons } from '@/components/my-ui/icons'
 
 export function MainNav({ items }: { items?: MainNavItem[] }) {
   return (

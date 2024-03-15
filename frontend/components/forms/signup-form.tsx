@@ -16,8 +16,8 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Icons } from '@/components/icons'
-import { PasswordInput } from '@/components/password-input'
+import { Icons } from '@/components/my-ui/icons'
+import { PasswordInput } from '@/components/my-ui/password-input'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { registerUserApi } from '@/api/auth'

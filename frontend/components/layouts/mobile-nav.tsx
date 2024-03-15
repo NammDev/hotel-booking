@@ -16,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { Icons } from '@/components/icons'
+import { Icons } from '@/components/my-ui/icons'
 import { useState } from 'react'
 
 export function MobileNav({ items }: { items?: MainNavItem[] }) {

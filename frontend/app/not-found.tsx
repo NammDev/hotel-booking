@@ -2,7 +2,7 @@ import Link from 'next/link'
 import MarketingLayout from './(main)/layout'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { Icons } from '@/components/icons'
+import { Icons } from '@/components/my-ui/icons'
 
 export default function Component() {
   return (

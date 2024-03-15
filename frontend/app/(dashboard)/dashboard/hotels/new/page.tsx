@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 
 // import { getCacheduser } from '@/lib/actions/auth'
 import { PageHeader, PageHeaderDescription, PageHeaderHeading } from '@/components/page-header'
-import { Shell } from '@/components/shells/shell'
+import { Shell } from '@/components/shells'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useProfile } from '@/hooks/use-profile'
 import AddHotelForm from '@/components/forms/add-hotel-form'

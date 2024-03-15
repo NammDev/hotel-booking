@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { SignInForm } from '@/components/forms/signin-form'
-import { Shell } from '@/components/shells/shell'
+import { Shell } from '@/components/shells'
 
 export const metadata: Metadata = {
   title: 'Login',

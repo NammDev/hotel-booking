@@ -18,7 +18,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { DashboardIcon, ExitIcon, GearIcon } from '@radix-ui/react-icons'
-import { Icons } from '../icons'
+import { Icons } from '../my-ui/icons'
 import { useProfile } from '@/hooks/use-profile'
 import { UserType } from '@/lib/type'
 import { MobileNav } from './mobile-nav'

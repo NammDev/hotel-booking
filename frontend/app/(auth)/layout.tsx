@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Icons } from '@/components/icons'
+import { Icons } from '@/components/my-ui/icons'
 import { AspectRatio } from '@/components/ui/aspect-ratio'
 import Image from 'next/image'
 
