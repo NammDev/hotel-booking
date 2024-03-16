@@ -16,6 +16,19 @@ export const getMyHotels = async (req: Request, res: Response) => {
   }
 }
 
+export const getMyHotelById = async (req: Request, res: Response) => {
+  const id = req.params.id.toString()
+  try {
+    const hotel = await HotelModel.findOne({
+      _id: id,
+      userId: req.userId,
+    })
+    res.json(hotel)
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching hotels' })
+  }
+}
+
 export const createNewHotel = async (req: Request, res: Response) => {
   try {
     // get file from multer

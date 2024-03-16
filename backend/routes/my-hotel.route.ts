@@ -1,6 +1,6 @@
 import express from 'express'
 import { isAutheticated } from '../middleware/auth'
-import { createNewHotel, getMyHotels } from '../controllers/my-hotel.controller'
+import { createNewHotel, getMyHotelById, getMyHotels } from '../controllers/my-hotel.controller'
 import multer from 'multer'
 
 const myHotelRouter = express.Router()
@@ -16,5 +16,6 @@ const upload = multer({
 
 myHotelRouter.post('/', isAutheticated, upload.array('imageFiles', 6), createNewHotel)
 myHotelRouter.get('/', isAutheticated, getMyHotels)
+myHotelRouter.get('/:id', isAutheticated, getMyHotelById)
 
 export default myHotelRouter
