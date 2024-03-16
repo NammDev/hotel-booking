@@ -1,22 +1,14 @@
 import { ErrorCard } from '@/components/cards/error-card'
 import { Shell } from '@/components/shells'
 
-interface ProductNotFoundProps {
-  params: {
-    storeId: string
-  }
-}
-
-export default function ProductNotFound({ params }: ProductNotFoundProps) {
-  const storeId = Number(params.storeId)
-
+export default function HotelNotFound() {
   return (
     <Shell variant='centered' className='max-w-md'>
       <ErrorCard
-        title='Product not found'
-        description='The product may have expired or you may have already updated your product'
-        retryLink={`/dashboard/stores/${storeId}/products`}
-        retryLinkText='Go to Products'
+        title='Hotel not found'
+        description='The hotel may have expired or you may have already updated your hotel'
+        retryLink={`/dashboard/hotels`}
+        retryLinkText='Go to Hotels Page'
       />
     </Shell>
   )

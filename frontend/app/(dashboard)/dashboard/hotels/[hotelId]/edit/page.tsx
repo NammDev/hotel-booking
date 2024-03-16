@@ -1,37 +1,19 @@
-import { type Metadata } from 'next'
-import { notFound } from 'next/navigation'
-// import { db } from '@/db'
-// import { products } from '@/db/schema'
-// import { env } from '@/env.mjs'
-// import { and, eq } from 'drizzle-orm'
+'use client'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-// import { UpdateProductForm } from '@/components/forms/update-product-form'
+import { QueryKeys } from '@/config/query-key'
+import { fetchMyHotelById } from '@/api/hotel'
+import { useQuery } from '@tanstack/react-query'
+import { UpdateHotelForm } from '@/components/forms/update-hotel-form'
 // import { ProductPager } from '@/components/pagers/product-pager'
 
-export const metadata: Metadata = {
-  title: 'Manage Product',
-  description: 'Manage your product',
-}
+export default function UpdateHotelPage({ params }: { params: { hotelId: string } }) {
+  const hotelId = params.hotelId
 
-interface UpdateProductPageProps {
-  params: {
-    storeId: string
-    productId: string
-  }
-}
-
-export default async function UpdateProductPage({ params }: UpdateProductPageProps) {
-  //   const storeId = Number(params.storeId)
-  //   const productId = Number(params.productId)
-
-  //   const product = await db.query.products.findFirst({
-  //     where: and(eq(products.id, productId), eq(products.storeId, storeId)),
-  //   })
-
-  //   if (!product) {
-  //     notFound()
-  //   }
+  const { data: hotel } = useQuery({
+    queryKey: [QueryKeys.MYHOTEL],
+    queryFn: () => fetchMyHotelById(hotelId),
+  })
 
   return (
     <Card>
@@ -45,8 +27,7 @@ export default async function UpdateProductPage({ params }: UpdateProductPagePro
         <CardDescription>Update your product information, or delete it</CardDescription>
       </CardHeader>
       <CardContent>
-        {/* <UpdateProductForm product={product} />  */}
-        Update Product Page Form
+        <UpdateHotelForm hotel={hotel?.data} />
       </CardContent>
     </Card>
   )

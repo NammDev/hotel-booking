@@ -2,6 +2,7 @@ import { addHotelSchema } from '@/lib/validations/hotel'
 import { z } from 'zod'
 import { axiosInstance, axiosInstanceForm } from '.'
 import axios from 'axios'
+import { HotelType } from '@/lib/type'
 
 export async function addHotel(formDataJson: z.infer<typeof addHotelSchema>) {
   const {
@@ -56,13 +57,11 @@ export async function addHotel(formDataJson: z.infer<typeof addHotelSchema>) {
 
 export const fetchMyHotels = async () => {
   return await axiosInstance.get('/api/my-hotels')
-  // const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
-  //   credentials: 'include',
-  // })
-  // if (!response.ok) {
-  //   throw new Error('Error fetching hotels')
-  // }
-  // return response.json()
+}
+
+export const fetchMyHotelById = async (hotelId: string) => {
+  console.log(hotelId)
+  return await axiosInstance.get(`/api/my-hotels/${hotelId}`)
 }
 
 // export const updateMyHotelById = async (editHotelData: z.infer<typeof editHotelSchema>) => {
