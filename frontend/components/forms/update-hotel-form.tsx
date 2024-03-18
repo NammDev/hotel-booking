@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import type { FileWithPreview } from '@/types'
@@ -37,12 +36,24 @@ import { Textarea } from '@/components/ui/textarea'
 // import { Zoom } from '@/components/zoom-image'
 // import type { OurFileRouter } from '@/app/api/uploadthing/core'
 import { HotelType } from '@/lib/type'
-
-// type Inputs = z.infer<typeof productSchema>
+import { useEffect } from 'react'
+import { updateHotelSchema } from '@/lib/validations/hotel'
+import { useMounted } from '@/hooks/use-mounted'
 
 // const { useUploadThing } = generateReactHelpers<OurFileRouter>()
+type Inputs = z.infer<typeof updateHotelSchema>
 
 export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
+  const form = useForm<Inputs>({
+    resolver: zodResolver(updateHotelSchema),
+  })
+
+  useEffect(() => {
+    form.reset(hotel)
+  }, [form, hotel])
+
+  const mounted = useMounted()
+
   //   const router = useRouter()
   //   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
   //   const [isUpdating, startUpdateTransition] = React.useTransition()
@@ -66,14 +77,6 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
   //   }, [product])
 
   //   const { isUploading, startUpload } = useUploadThing('productImage')
-
-  //   const form = useForm<Inputs>({
-  //     resolver: zodResolver(productSchema),
-  //     defaultValues: {
-  //       category: product.category,
-  //       subcategory: product.subcategory,
-  //     },
-  //   })
 
   //   const subcategories = getSubcategories(form.watch('category'))
 
@@ -112,7 +115,7 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
   //   }
 
   return (
-    <p>{hotel.name}</p>
+    <> {mounted ? <p>{hotel.name}</p> : <p>Loading</p>}</>
     // <Form {...form}>
     //   <form
     //     className='grid w-full max-w-2xl gap-5'
