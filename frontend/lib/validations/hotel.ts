@@ -20,7 +20,6 @@ export const addHotelSchema = z
     }),
     adultCount: z.number().positive(),
     childCount: z.number().positive(),
-    // imageUrls: z.array(z.string()), this is for edit hotel
   })
   .refine((data) => {
     if (!data.slug) {

@@ -122,7 +122,6 @@ const facilities = [
   },
 ]
 
-// const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 type Inputs = z.infer<typeof updateHotelSchema>
 
 export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
@@ -173,7 +172,7 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
   })
 
   const deleteHotelMutation = useMutation({
-    mutationFn: (data: Inputs) => deleteMyHotelById(data._id),
+    mutationFn: (hotelId: string) => deleteMyHotelById(hotelId),
     onSuccess: async () => {
       setFiles(null)
       form.reset()
@@ -189,12 +188,18 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
     },
   })
 
-  const onSubmit = form.handleSubmit((formDataJson: Inputs) => {
-    console.log('what?', formDataJson)
-  })
+  async function onSubmit(data: Inputs) {
+    try {
+      console.log('what?', data)
+      updateHotelMutation.mutate(data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   const ondelete = async () => {
     console.log('delete')
+    deleteHotelMutation.mutate(hotel._id)
     router.push(`/dashboard/hotels`)
   }
 

@@ -44,11 +44,11 @@ export async function addHotel(formDataJson: z.infer<typeof addHotelSchema>) {
 }
 
 export async function updateHotel(formDataJson: z.infer<typeof updateHotelSchema>) {
-  console.log('update hotel')
+  console.log('update hotel', formDataJson)
 }
 
 export const deleteMyHotelById = async (hotelId: string) => {
-  console.log('delete Hotel')
+  console.log('delete Hotel', hotelId)
 }
 
 // export const fetchMyHotels = async (): Promise<HotelType[]> => {
