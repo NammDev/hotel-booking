@@ -5,7 +5,7 @@ import { QueryKeys } from '@/config/query-key'
 import { fetchMyHotelById } from '@/api/hotel'
 import { useQuery } from '@tanstack/react-query'
 import { UpdateHotelForm } from '@/components/forms/update-hotel-form'
-import { notFound } from 'next/navigation'
+import HotelNotFound from './not-found'
 // import { ProductPager } from '@/components/pagers/product-pager'
 
 export default function UpdateHotelPage({ params }: { params: { hotelId: string } }) {
@@ -17,7 +17,7 @@ export default function UpdateHotelPage({ params }: { params: { hotelId: string 
   })
 
   if (!hotel) {
-    return <span>No Hotels found</span>
+    return <HotelNotFound />
   }
 
   return (

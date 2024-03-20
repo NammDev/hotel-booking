@@ -40,6 +40,7 @@ import { deleteMyHotelById, updateHotel } from '@/api/hotel'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from '../ui/use-toast'
 import Link from 'next/link'
+import UpdateProductLoading from '@/app/(dashboard)/dashboard/hotels/[hotelId]/edit/loading'
 
 // mock data
 const products = {
@@ -514,7 +515,7 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
           </form>
         </Form>
       ) : (
-        <p>Loading</p>
+        <UpdateProductLoading />
       )}
     </>
   )
