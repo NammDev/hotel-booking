@@ -7,14 +7,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { type z } from 'zod'
 
-import { getSubcategories } from '@/config/products'
-// import { checkProduct, deleteProduct, updateProduct } from '@/lib/actions/product'
-// import { catchError, isArrayOfFile } from '@/lib/utils'
-// import { productSchema } from '@/lib/validations/product'
 import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -31,19 +28,107 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-// import { FileDialog } from '@/components/file-dialog'
-// import { Icons } from '@/components/icons'
-// import { Zoom } from '@/components/zoom-image'
-// import type { OurFileRouter } from '@/app/api/uploadthing/core'
 import { HotelType } from '@/lib/type'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { updateHotelSchema } from '@/lib/validations/hotel'
 import { useMounted } from '@/hooks/use-mounted'
+import { Checkbox } from '../ui/checkbox'
+import { FileDialog } from './file-dialog'
+import { Zoom } from '../zoom-image'
+import { Icons } from '../my-ui/icons'
+import { deleteMyHotelById, updateHotel } from '@/api/hotel'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from '../ui/use-toast'
+import Link from 'next/link'
+
+// mock data
+const products = {
+  category: {
+    enumValues: {
+      hotel: 'hotel',
+      motel: 'motel',
+      resort: 'resort',
+      inn: 'inn',
+      guesthouse: 'guesthouse',
+      bedAndBreakfast: 'bed and breakfast',
+      hostel: 'hostel',
+      apartment: 'apartment',
+      vacationRental: 'vacation rental',
+    },
+  },
+}
+
+const facilities = [
+  {
+    id: 'freeWifi',
+    label: 'Free WiFi',
+  },
+  {
+    id: 'parking',
+    label: 'Parking',
+  },
+  {
+    id: 'pool',
+    label: 'Pool',
+  },
+  {
+    id: 'gym',
+    label: 'Gym',
+  },
+  {
+    id: 'restaurant',
+    label: 'Restaurant',
+  },
+  {
+    id: 'spa',
+    label: 'Spa',
+  },
+  {
+    id: 'roomService',
+    label: 'Room Service',
+  },
+  {
+    id: 'bar',
+    label: 'Bar',
+  },
+  {
+    id: 'laundry',
+    label: 'Laundry',
+  },
+  {
+    id: 'fitnessCenter',
+    label: 'Fitness Center',
+  },
+  {
+    id: 'conferenceRoom',
+    label: 'Conference',
+  },
+  {
+    id: 'facility1',
+    label: 'Facility 1',
+  },
+  {
+    id: 'facility2',
+    label: 'Facility 2',
+  },
+  {
+    id: 'facility3',
+    label: 'Facility 3',
+  },
+  {
+    id: 'facility4',
+    label: 'Facility 4',
+  },
+]
 
 // const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 type Inputs = z.infer<typeof updateHotelSchema>
 
 export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
+  const [files, setFiles] = useState<FileWithPreview[] | null>(null)
+  const mounted = useMounted()
+  const router = useRouter()
+
   const form = useForm<Inputs>({
     resolver: zodResolver(updateHotelSchema),
   })
@@ -52,247 +137,385 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
     form.reset(hotel)
   }, [form, hotel])
 
-  const mounted = useMounted()
+  useEffect(() => {
+    // if (hotel.imageUrls && hotel.imageUrls.length > 0) {
+    //   setFiles(
+    //     hotel.imageUrls.map((image) => {
+    //       const file = new File([], image, {
+    //         type: 'image',
+    //       })
+    //       const fileWithPreview = Object.assign(file, {
+    //         preview: image,
+    //       })
+    //       return fileWithPreview
+    //     })
+    //   )
+    // }
+  }, [hotel])
 
-  //   const router = useRouter()
-  //   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
-  //   const [isUpdating, startUpdateTransition] = React.useTransition()
-  //   const [isDeleting, startDeleteTransition] = React.useTransition()
+  // tanstack query
+  const updateHotelMutation = useMutation({
+    mutationFn: (data: Inputs) => updateHotel(data),
+    onSuccess: async () => {
+      setFiles(null)
+      form.reset()
+      toast({ description: 'Hotel update successfully!' })
+      router.push('/dashboard/hotels')
+    },
+    onError: (error: any) => {
+      toast({
+        variant: 'destructive',
+        title: error.name,
+        description: error.response.data.message,
+      })
+    },
+  })
 
-  //   React.useEffect(() => {
-  //     if (product.images && product.images.length > 0) {
-  //       setFiles(
-  //         product.images.map((image) => {
-  //           const file = new File([], image.name, {
-  //             type: 'image',
-  //           })
-  //           const fileWithPreview = Object.assign(file, {
-  //             preview: image.url,
-  //           })
+  const deleteHotelMutation = useMutation({
+    mutationFn: (data: Inputs) => deleteMyHotelById(data._id),
+    onSuccess: async () => {
+      setFiles(null)
+      form.reset()
+      toast({ description: 'Hotel delete successfully!' })
+      router.push('/dashboard/hotels')
+    },
+    onError: (error: any) => {
+      toast({
+        variant: 'destructive',
+        title: error.name,
+        description: error.response.data.message,
+      })
+    },
+  })
 
-  //           return fileWithPreview
-  //         })
-  //       )
-  //     }
-  //   }, [product])
+  const onSubmit = form.handleSubmit((formDataJson: Inputs) => {
+    console.log('what?', formDataJson)
+  })
 
-  //   const { isUploading, startUpload } = useUploadThing('productImage')
-
-  //   const subcategories = getSubcategories(form.watch('category'))
-
-  //   function onSubmit(data: Inputs) {
-  //     startUpdateTransition(async () => {
-  //       try {
-  //         await checkProduct({
-  //           name: data.name,
-  //           id: product.id,
-  //         })
-
-  //         const images = isArrayOfFile(data.images)
-  //           ? await startUpload(data.images).then((res) => {
-  //               const formattedImages = res?.map((image) => ({
-  //                 id: image.key,
-  //                 name: image.key.split('_')[1] ?? image.key,
-  //                 url: image.url,
-  //               }))
-  //               return formattedImages ?? null
-  //             })
-  //           : null
-
-  //         await updateProduct({
-  //           ...data,
-  //           storeId: product.storeId,
-  //           id: product.id,
-  //           images: images ?? product.images,
-  //         })
-
-  //         toast.success('Product updated successfully.')
-  //         setFiles(null)
-  //       } catch (err) {
-  //         catchError(err)
-  //       }
-  //     })
-  //   }
+  const ondelete = async () => {
+    console.log('delete')
+    router.push(`/dashboard/hotels`)
+  }
 
   return (
-    <> {mounted ? <p>{hotel.name}</p> : <p>Loading</p>}</>
-    // <Form {...form}>
-    //   <form
-    //     className='grid w-full max-w-2xl gap-5'
-    //     onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-    //   >
-    //     <FormItem>
-    //       <FormLabel>Name</FormLabel>
-    //       <FormControl>
-    //         <Input
-    //           aria-invalid={!!form.formState.errors.name}
-    //           placeholder='Type product name here.'
-    //           {...form.register('name')}
-    //           defaultValue={product.name}
-    //         />
-    //       </FormControl>
-    //       <UncontrolledFormMessage message={form.formState.errors.name?.message} />
-    //     </FormItem>
-    //     <FormItem>
-    //       <FormLabel>Description</FormLabel>
-    //       <FormControl>
-    //         <Textarea
-    //           placeholder='Type product description here.'
-    //           {...form.register('description')}
-    //           defaultValue={product.description ?? ''}
-    //         />
-    //       </FormControl>
-    //       <UncontrolledFormMessage message={form.formState.errors.description?.message} />
-    //     </FormItem>
-    //     <div className='flex flex-col items-start gap-6 sm:flex-row'>
-    //       <FormField
-    //         control={form.control}
-    //         name='category'
-    //         render={({ field }) => (
-    //           <FormItem className='w-full'>
-    //             <FormLabel>Category</FormLabel>
-    //             <FormControl>
-    //               <Select
-    //                 value={field.value}
-    //                 onValueChange={(value: typeof field.value) => field.onChange(value)}
-    //                 defaultValue={product.category}
-    //               >
-    //                 <SelectTrigger className='capitalize'>
-    //                   <SelectValue placeholder={field.value} />
-    //                 </SelectTrigger>
-    //                 <SelectContent>
-    //                   <SelectGroup>
-    //                     {Object.values(products.category.enumValues).map((option) => (
-    //                       <SelectItem key={option} value={option} className='capitalize'>
-    //                         {option}
-    //                       </SelectItem>
-    //                     ))}
-    //                   </SelectGroup>
-    //                 </SelectContent>
-    //               </Select>
-    //             </FormControl>
-    //             <FormMessage />
-    //           </FormItem>
-    //         )}
-    //       />
-    //       <FormField
-    //         control={form.control}
-    //         name='subcategory'
-    //         render={({ field }) => (
-    //           <FormItem className='w-full'>
-    //             <FormLabel>Subcategory</FormLabel>
-    //             <FormControl>
-    //               <Select value={field.value?.toString()} onValueChange={field.onChange}>
-    //                 <SelectTrigger className='capitalize'>
-    //                   <SelectValue placeholder={field.value} />
-    //                 </SelectTrigger>
-    //                 <SelectContent>
-    //                   <SelectGroup>
-    //                     {subcategories.map((option) => (
-    //                       <SelectItem key={option.value} value={option.value}>
-    //                         {option.label}
-    //                       </SelectItem>
-    //                     ))}
-    //                   </SelectGroup>
-    //                 </SelectContent>
-    //               </Select>
-    //             </FormControl>
-    //             <FormMessage />
-    //           </FormItem>
-    //         )}
-    //       />
-    //     </div>
-    //     <div className='flex flex-col items-start gap-6 sm:flex-row'>
-    //       <FormItem className='w-full'>
-    //         <FormLabel>Price</FormLabel>
-    //         <FormControl>
-    //           <Input
-    //             type='number'
-    //             inputMode='numeric'
-    //             placeholder='Type product price here.'
-    //             {...form.register('price')}
-    //             defaultValue={product.price}
-    //           />
-    //         </FormControl>
-    //         <UncontrolledFormMessage message={form.formState.errors.price?.message} />
-    //       </FormItem>
-    //       <FormItem className='w-full'>
-    //         <FormLabel>Inventory</FormLabel>
-    //         <FormControl>
-    //           <Input
-    //             type='number'
-    //             inputMode='numeric'
-    //             placeholder='Type product inventory here.'
-    //             {...form.register('inventory', {
-    //               valueAsNumber: true,
-    //             })}
-    //             defaultValue={product.inventory}
-    //           />
-    //         </FormControl>
-    //         <UncontrolledFormMessage message={form.formState.errors.inventory?.message} />
-    //       </FormItem>
-    //     </div>
-    //     <FormItem className='flex w-full flex-col gap-1.5'>
-    //       <FormLabel>Images</FormLabel>
-    //       {files?.length ? (
-    //         <div className='flex items-center gap-2'>
-    //           {files.map((file, i) => (
-    //             <Zoom key={i}>
-    //               <Image
-    //                 src={file.preview}
-    //                 alt={file.name}
-    //                 className='size-20 shrink-0 rounded-md object-cover object-center'
-    //                 width={80}
-    //                 height={80}
-    //               />
-    //             </Zoom>
-    //           ))}
-    //         </div>
-    //       ) : null}
-    //       <FormControl>
-    //         <FileDialog
-    //           setValue={form.setValue}
-    //           name='images'
-    //           maxFiles={3}
-    //           maxSize={1024 * 1024 * 4}
-    //           files={files}
-    //           setFiles={setFiles}
-    //           isUploading={isUploading}
-    //           disabled={isUpdating}
-    //         />
-    //       </FormControl>
-    //       <UncontrolledFormMessage message={form.formState.errors.images?.message} />
-    //     </FormItem>
-    //     <div className='flex space-x-2'>
-    //       <Button disabled={isDeleting || isUpdating}>
-    //         {isUpdating && (
-    //           <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />
-    //         )}
-    //         Update Product
-    //         <span className='sr-only'>Update product</span>
-    //       </Button>
-    //       <Button
-    //         variant='destructive'
-    //         onClick={() => {
-    //           startDeleteTransition(async () => {
-    //             void form.trigger(['name', 'price', 'inventory'])
-    //             await deleteProduct({
-    //               storeId: product.storeId,
-    //               id: product.id,
-    //             })
-    //             router.push(`/dashboard/stores/${product.storeId}/products`)
-    //           })
-    //         }}
-    //         disabled={isDeleting}
-    //       >
-    //         {isDeleting && (
-    //           <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />
-    //         )}
-    //         Delete Product
-    //         <span className='sr-only'>Delete product</span>
-    //       </Button>
-    //     </div>
-    //   </form>
-    // </Form>
+    <>
+      {mounted ? (
+        <Form {...form}>
+          <form className='grid w-full max-w-xl gap-5' onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              name='name'
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder='Type hotel name here.' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name='description'
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder='Type hotel description here.' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className='flex flex-col items-start gap-6 sm:flex-row'>
+              <FormField
+                name='country'
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className='w-full'>
+                    <FormLabel>Country</FormLabel>
+                    <FormControl>
+                      <Input placeholder='Country!' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name='city'
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className='w-full'>
+                    <FormLabel>City</FormLabel>
+                    <FormControl>
+                      <Input placeholder='Your City' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className='flex flex-col items-start gap-6 sm:flex-row'>
+              <FormField
+                name='pricePerNight'
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className='w-full'>
+                    <FormLabel>Price Per Night</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='number'
+                        inputMode='numeric'
+                        name='pricePerNight'
+                        placeholder='$ Price!'
+                        value={Number.isNaN(field.value) ? '' : field.value}
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name='starRating'
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className='w-full'>
+                    <FormLabel>Star Rating</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='number'
+                        inputMode='numeric'
+                        name='starRating'
+                        placeholder='Star Rating'
+                        value={Number.isNaN(field.value) ? '' : field.value}
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className='flex flex-col items-start gap-6 sm:flex-row'>
+              <FormField
+                control={form.control}
+                name='type'
+                render={({ field }) => (
+                  <FormItem className='w-full'>
+                    <FormLabel>Type</FormLabel>
+                    <Select
+                      name='type'
+                      value={field.value}
+                      onValueChange={(value: typeof field.value) => field.onChange(value)}
+                    >
+                      <FormControl>
+                        <SelectTrigger className='capitalize'>
+                          <SelectValue placeholder='Please choose a Type of your hotel' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          {Object.values(products.category.enumValues).map((option) => (
+                            <SelectItem key={option} value={option} className='capitalize'>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      You can manage email addresses in your{' '}
+                      <Link href='/examples/forms'>email settings</Link>.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* <FormField
+          control={form.control}
+          name='subcategory'
+          render={({ field }) => (
+            <FormItem className='w-full'>
+              <FormLabel>Subcategory</FormLabel>
+              <Select value={field.value?.toString()} onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Select a subcategory' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    {subcategories.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        /> */}
+            </div>
+
+            <div className='flex flex-col items-start gap-6 sm:flex-row'>
+              <FormField
+                control={form.control}
+                name='facilities'
+                render={() => (
+                  <FormItem className='w-full mb-4'>
+                    <div className='mb-4'>
+                      <FormLabel className='text-base'>Facilities</FormLabel>
+                      <FormDescription>
+                        Select the facility you want to add to your hotel.
+                      </FormDescription>
+                    </div>
+                    <div className='grid grid-cols-2 lg:grid-cols-3 gap-4 w-full'>
+                      {facilities.map((facility) => (
+                        <FormField
+                          key={facility.id}
+                          control={form.control}
+                          name='facilities'
+                          render={({ field }) => {
+                            return (
+                              <FormItem
+                                key={facility.id}
+                                className='flex flex-row items-start space-x-3 space-y-0 col-span-1'
+                              >
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value?.includes(facility.id)}
+                                    onCheckedChange={(checked) => {
+                                      return checked
+                                        ? field.onChange([...field.value, facility.id])
+                                        : field.onChange(
+                                            field.value?.filter((value) => value !== facility.id)
+                                          )
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormLabel className='text-sm font-normal hover:cursor-pointer'>
+                                  {facility.label}
+                                </FormLabel>
+                              </FormItem>
+                            )
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className='flex flex-col items-start gap-6 sm:flex-row '>
+              <FormField
+                name='adultCount'
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className='w-full'>
+                    <FormLabel>Adults</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='number'
+                        inputMode='numeric'
+                        name='adultCount'
+                        min={1}
+                        placeholder='Adults Count'
+                        value={Number.isNaN(field.value) ? '' : field.value}
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name='childCount'
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className='w-full'>
+                    <FormLabel>Childrens</FormLabel>
+                    <FormControl>
+                      <Input
+                        min={0}
+                        type='number'
+                        inputMode='numeric'
+                        name='childCount'
+                        placeholder='Childrens Count'
+                        value={Number.isNaN(field.value) ? '' : field.value}
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormItem className='flex w-full flex-col gap-1.5'>
+              <FormLabel>Images</FormLabel>
+              {files?.length ? (
+                <div className='flex items-center gap-2'>
+                  {files.map((file, i) => (
+                    <Zoom key={i}>
+                      <Image
+                        src={file.preview}
+                        alt={file.name}
+                        className='size-20 shrink-0 rounded-md object-cover object-center'
+                        width={80}
+                        height={80}
+                      />
+                    </Zoom>
+                  ))}
+                </div>
+              ) : null}
+              <FormControl>
+                <FileDialog
+                  setValue={form.setValue}
+                  name='imageFiles'
+                  maxFiles={6}
+                  maxSize={1024 * 1024 * 4}
+                  files={files}
+                  setFiles={setFiles}
+                  disabled={updateHotelMutation.isPending}
+                />
+              </FormControl>
+              <UncontrolledFormMessage message={form.formState.errors.imageFiles?.message} />
+            </FormItem>
+
+            <div className='flex space-x-2'>
+              <Button disabled={updateHotelMutation.isPending || deleteHotelMutation.isPending}>
+                {updateHotelMutation.isPending && (
+                  <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />
+                )}
+                Update Hotel
+                <span className='sr-only'>Update hotel</span>
+              </Button>
+              <Button
+                variant='destructive'
+                onClick={ondelete}
+                disabled={deleteHotelMutation.isPending}
+              >
+                {deleteHotelMutation.isPending && (
+                  <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />
+                )}
+                Delete Hotels
+                <span className='sr-only'>Delete hotels</span>
+              </Button>
+            </div>
+          </form>
+        </Form>
+      ) : (
+        <p>Loading</p>
+      )}
+    </>
   )
 }

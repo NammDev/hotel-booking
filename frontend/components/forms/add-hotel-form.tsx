@@ -56,18 +56,6 @@ const products = {
   },
 }
 
-const subcategories = [
-  { value: 'hotel', label: 'Hotel' },
-  { value: 'motel', label: 'Motel' },
-  { value: 'resort', label: 'Resort' },
-  { value: 'inn', label: 'Inn' },
-  { value: 'guesthouse', label: 'Guesthouse' },
-  { value: 'bedAndBreakfast', label: 'Bed and Breakfast' },
-  { value: 'hostel', label: 'Hostel' },
-  { value: 'apartment', label: 'Apartment' },
-  { value: 'vacationRental', label: 'Vacation Rental' },
-]
-
 const facilities = [
   {
     id: 'freeWifi',
@@ -136,8 +124,6 @@ type Inputs = z.infer<typeof addHotelSchema>
 export default function AddHotelForm({ userId }: { userId: string }) {
   const router = useRouter()
   const [files, setFiles] = useState<FileWithPreview[] | null>(null)
-
-  const isUploading = false
 
   // tanstack query
   const { mutate, isPending } = useMutation({
@@ -459,7 +445,6 @@ export default function AddHotelForm({ userId }: { userId: string }) {
               maxSize={1024 * 1024 * 4}
               files={files}
               setFiles={setFiles}
-              isUploading={isUploading}
               disabled={isPending}
             />
           </FormControl>
