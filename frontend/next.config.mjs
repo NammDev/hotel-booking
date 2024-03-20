@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'loremflickr.com',
       },
+      {
+        protocol: 'http',
+        hostname: 'res.cloudinary.com',
+      },
     ],
   },
   typescript: { ignoreBuildErrors: true, ignoreDevErrors: true },

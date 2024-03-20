@@ -138,19 +138,19 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
   }, [form, hotel])
 
   useEffect(() => {
-    // if (hotel.imageUrls && hotel.imageUrls.length > 0) {
-    //   setFiles(
-    //     hotel.imageUrls.map((image) => {
-    //       const file = new File([], image, {
-    //         type: 'image',
-    //       })
-    //       const fileWithPreview = Object.assign(file, {
-    //         preview: image,
-    //       })
-    //       return fileWithPreview
-    //     })
-    //   )
-    // }
+    if (hotel.imageUrls && hotel.imageUrls.length > 0) {
+      setFiles(
+        hotel.imageUrls.map((image) => {
+          const file = new File([], image, {
+            type: 'image',
+          })
+          const fileWithPreview = Object.assign(file, {
+            preview: image,
+          })
+          return fileWithPreview
+        })
+      )
+    }
   }, [hotel])
 
   // tanstack query
