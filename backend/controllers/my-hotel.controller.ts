@@ -84,3 +84,20 @@ export const updateHotel = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Something went throw' })
   }
 }
+
+export const deleteHotel = async (req: Request, res: Response) => {
+  try {
+    const { hotelId } = req.params
+    const hotel = await HotelModel.findById(hotelId)
+    if (!hotel) return res.status(404).json({ message: 'Hotel not found' })
+
+    await hotel.deleteOne({ hotelId })
+
+    res.status(200).json({
+      success: true,
+      message: 'Hotel deleted successfully',
+    })
+  } catch (error: any) {
+    res.status(500).json({ message: 'Something went throw' })
+  }
+}

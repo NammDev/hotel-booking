@@ -2,6 +2,7 @@ import express from 'express'
 import { isAutheticated } from '../middleware/auth'
 import {
   createNewHotel,
+  deleteHotel,
   getMyHotelById,
   getMyHotels,
   updateHotel,
@@ -21,6 +22,7 @@ const upload = multer({
 
 myHotelRouter.post('/', isAutheticated, upload.array('imageFiles', 6), createNewHotel)
 myHotelRouter.put('/:hotelId', isAutheticated, upload.array('imageFiles', 6), updateHotel)
+myHotelRouter.delete('/:hotelId', isAutheticated, deleteHotel)
 myHotelRouter.get('/', isAutheticated, getMyHotels)
 myHotelRouter.get('/:id', isAutheticated, getMyHotelById)
 
