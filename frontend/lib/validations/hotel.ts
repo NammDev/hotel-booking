@@ -44,5 +44,4 @@ export const updateHotelSchema = z.object({
   }),
   adultCount: z.number().positive(),
   childCount: z.number().positive(),
-  imageUrls: z.array(z.unknown()),
 })

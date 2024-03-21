@@ -72,7 +72,7 @@ export const updateHotel = async (req: Request, res: Response) => {
     // upload the images to cloudinary
     const updatedImageUrls = await uploadImages(files)
 
-    hotel.imageUrls = [...updatedImageUrls, ...(updatedHotel.imageUrls || [])]
+    hotel.imageUrls = updatedImageUrls
 
     // save hotel
     await hotel.save()

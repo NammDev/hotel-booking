@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import type { FileWithPreview } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -125,6 +125,7 @@ const facilities = [
 type Inputs = z.infer<typeof updateHotelSchema>
 
 export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
+  const hotelId = useParams().hotelId as string
   const [files, setFiles] = useState<FileWithPreview[] | null>(null)
   const mounted = useMounted()
   const router = useRouter()
@@ -138,24 +139,35 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
   }, [form, hotel])
 
   useEffect(() => {
-    if (hotel.imageUrls && hotel.imageUrls.length > 0) {
-      setFiles(
-        hotel.imageUrls.map((image) => {
-          const file = new File([], image, {
-            type: 'image',
-          })
-          const fileWithPreview = Object.assign(file, {
-            preview: image,
-          })
-          return fileWithPreview
+    const fetchImage = async (imageUrl: string) => {
+      try {
+        const response = await fetch(imageUrl)
+        const blob = await response.blob()
+        const file = new File([blob], imageUrl, { type: 'image/jpeg' })
+        const fileWithPreview = Object.assign(file, {
+          preview: imageUrl,
         })
-      )
+        return fileWithPreview
+      } catch (error) {
+        console.error('Error fetching image:', error)
+        return null
+      }
     }
+
+    const convertImageUrlsToFiles = async () => {
+      if (hotel.imageUrls && hotel.imageUrls.length > 0) {
+        const filesPromises = hotel.imageUrls.map((imageUrl) => fetchImage(imageUrl))
+        const files = await Promise.all(filesPromises)
+        setFiles(files.filter((file): file is FileWithPreview => file !== null))
+      }
+    }
+
+    convertImageUrlsToFiles()
   }, [hotel])
 
   // tanstack query
   const updateHotelMutation = useMutation({
-    mutationFn: (data: Inputs) => updateHotel(data),
+    mutationFn: (data: Inputs) => updateHotel(data, hotelId),
     onSuccess: async () => {
       setFiles(null)
       form.reset()
@@ -190,7 +202,6 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
 
   const onSubmit = async (data: Inputs) => {
     try {
-      console.log('what?', data)
       updateHotelMutation.mutate(data)
     } catch (err) {
       console.log(err)
