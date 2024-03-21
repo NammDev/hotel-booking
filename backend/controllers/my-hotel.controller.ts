@@ -89,7 +89,7 @@ export const deleteHotel = async (req: Request, res: Response) => {
   try {
     const { hotelId } = req.params
     const hotel = await HotelModel.findById(hotelId)
-    if (!hotel) return res.status(404).json({ message: 'Hotel not found' })
+    if (!hotel) return res.status(404).json({ message: 'Hotel not founddd' })
 
     await hotel.deleteOne({ hotelId })
 

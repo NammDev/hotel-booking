@@ -16,7 +16,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             staleTime: 10 * 1000,
             refetchInterval: 10 * 1000,
           },
-          mutations: { retry: 2, retryDelay: 500 },
+          mutations: { retry: 0 },
         },
       })
   )

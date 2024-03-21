@@ -1,8 +1,6 @@
 import { addHotelSchema, updateHotelSchema } from '@/lib/validations/hotel'
 import { z } from 'zod'
 import { axiosInstance, axiosInstanceForm } from '.'
-import axios from 'axios'
-import { HotelType } from '@/lib/type'
 
 export async function addHotel(formDataJson: z.infer<typeof addHotelSchema>) {
   const {
@@ -85,20 +83,8 @@ export async function updateHotel(
 }
 
 export const deleteMyHotelById = async (hotelId: string) => {
-  console.log('delete Hotel', hotelId)
+  return await axiosInstance.delete(`/api/my-hotels/${hotelId}`)
 }
-
-// export const fetchMyHotels = async (): Promise<HotelType[]> => {
-//   const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
-//     credentials: 'include',
-//   })
-
-//   if (!response.ok) {
-//     throw new Error('Error fetching hotels')
-//   }
-
-//   return response.json()
-// }
 
 export const fetchMyHotels = async () => {
   return await axiosInstance.get('/api/my-hotels')
@@ -107,15 +93,3 @@ export const fetchMyHotels = async () => {
 export const fetchMyHotelById = async (hotelId: string) => {
   return await axiosInstance.get(`/api/my-hotels/${hotelId}`)
 }
-
-// export const updateMyHotelById = async (editHotelData: z.infer<typeof editHotelSchema>) => {
-// const response = await fetch(`${API_BASE_URL}/api/my-hotels/${hotelFormData.get('hotelId')}`, {
-//   method: 'PUT',
-//   body: hotelFormData,
-//   credentials: 'include',
-// })
-// if (!response.ok) {
-//   throw new Error('Failed to update Hotel')
-// }
-// return response.json()
-// }

@@ -37,10 +37,11 @@ import { FileDialog } from './file-dialog'
 import { Zoom } from '../zoom-image'
 import { Icons } from '../my-ui/icons'
 import { deleteMyHotelById, updateHotel } from '@/api/hotel'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from '../ui/use-toast'
 import Link from 'next/link'
 import UpdateProductLoading from '@/app/(dashboard)/dashboard/hotels/[hotelId]/edit/loading'
+import { QueryKeys } from '@/config/query-key'
 
 // mock data
 const products = {
@@ -128,6 +129,7 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
   const hotelId = useParams().hotelId as string
   const [files, setFiles] = useState<FileWithPreview[] | null>(null)
   const mounted = useMounted()
+  const queryClient = useQueryClient()
   const router = useRouter()
 
   const form = useForm<Inputs>({
@@ -186,9 +188,8 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
   const deleteHotelMutation = useMutation({
     mutationFn: (hotelId: string) => deleteMyHotelById(hotelId),
     onSuccess: async () => {
-      setFiles(null)
-      form.reset()
       toast({ description: 'Hotel delete successfully!' })
+      await queryClient.invalidateQueries({ queryKey: [QueryKeys.MYHOTELS] })
       router.push('/dashboard/hotels')
     },
     onError: (error: any) => {
@@ -210,7 +211,6 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
 
   const ondelete = async () => {
     try {
-      console.log('delete')
       deleteHotelMutation.mutate(hotel._id)
     } catch (err) {
       console.log(err)
