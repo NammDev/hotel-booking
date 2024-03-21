@@ -1,3 +1,4 @@
+import { DateRangePicker } from '@/components/my-ui/date-range-picker'
 import { Icons } from '@/components/my-ui/icons'
 import { Shell } from '@/components/shells'
 import { Badge } from '@/components/ui/badge'
@@ -26,7 +27,7 @@ export default async function IndexPage() {
         </p>
         <div className='flex flex-wrap items-center justify-center gap-4 py-6'>
           <div className='border-w-8002 relative z-50 flex h-[54px] w-fit select-none flex-row items-center justify-center rounded-lg border transition-[height] duration-150 bg-gradient-to-b from-[#141414] to-[#1A1A1A]'>
-            <div
+            {/* <div
               role='button'
               className='border-w-8002 text-w-3005 group isolate z-50 flex h-full min-w-[150px] flex-row items-center whitespace-nowrap px-4 py-2 transition-[background,min-width] duration-300 ease-out hover:text-white xl:min-w-[200px]  hover:!bg-[#292929] group rounded-l-lg'
             >
@@ -36,7 +37,9 @@ export default async function IndexPage() {
                   When
                 </span>
               </div>
-            </div>
+            </div> */}
+            <DateRangePicker align='center' />
+
             <div
               role='button'
               className='border-w-8002 text-w-3005 group isolate z-50 flex h-full min-w-[150px] flex-row items-center whitespace-nowrap px-4 py-2 transition-[background,min-width] duration-300 ease-out hover:text-white xl:min-w-[200px] hover:!bg-[#292929] group border-x'
