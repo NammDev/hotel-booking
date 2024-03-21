@@ -42,6 +42,17 @@ import { toast } from '../ui/use-toast'
 import Link from 'next/link'
 import UpdateProductLoading from '@/app/(dashboard)/dashboard/hotels/[hotelId]/edit/loading'
 import { QueryKeys } from '@/config/query-key'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 // mock data
 const products = {
@@ -519,17 +530,34 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
                 Update Hotel
                 <span className='sr-only'>Update hotel</span>
               </Button>
-              <Button
-                variant='destructive'
-                onClick={ondelete}
-                disabled={deleteHotelMutation.isPending}
-              >
-                {deleteHotelMutation.isPending && (
-                  <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />
-                )}
-                Delete Hotels
-                <span className='sr-only'>Delete hotels</span>
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant='destructive'>Delete Hotel</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete your hotel and
+                      remove your data from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <Button
+                      variant='destructive'
+                      onClick={ondelete}
+                      disabled={deleteHotelMutation.isPending}
+                    >
+                      {deleteHotelMutation.isPending && (
+                        <Icons.spinner className='mr-2 size-4 animate-spin' aria-hidden='true' />
+                      )}
+                      Continue
+                      <span className='sr-only'>Delete hotels</span>
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </form>
         </Form>
