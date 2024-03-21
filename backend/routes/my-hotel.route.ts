@@ -15,6 +15,7 @@ const upload = multer({
 })
 
 myHotelRouter.post('/', isAutheticated, upload.array('imageFiles', 6), createNewHotel)
+myHotelRouter.put('/:hotelId', isAutheticated, upload.array('imageFiles', 6), createNewHotel)
 myHotelRouter.get('/', isAutheticated, getMyHotels)
 myHotelRouter.get('/:id', isAutheticated, getMyHotelById)
 

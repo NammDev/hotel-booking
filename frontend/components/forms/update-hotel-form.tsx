@@ -188,7 +188,7 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
     },
   })
 
-  async function onSubmit(data: Inputs) {
+  const onSubmit = async (data: Inputs) => {
     try {
       console.log('what?', data)
       updateHotelMutation.mutate(data)
@@ -198,9 +198,12 @@ export function UpdateHotelForm({ hotel }: { hotel: HotelType }) {
   }
 
   const ondelete = async () => {
-    console.log('delete')
-    deleteHotelMutation.mutate(hotel._id)
-    router.push(`/dashboard/hotels`)
+    try {
+      console.log('delete')
+      deleteHotelMutation.mutate(hotel._id)
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   return (

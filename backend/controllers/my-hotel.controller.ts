@@ -50,3 +50,37 @@ export const createNewHotel = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Something went wrong' })
   }
 }
+
+export const updateHotel = async (req: Request, res: Response) => {
+  try {
+    const updatedHotel: HotelType = req.body
+    updatedHotel.lastUpdated = new Date()
+    const hotel = await HotelModel.findOneAndUpdate(
+      {
+        _id: req.params.hotelId,
+        userId: req.userId,
+      },
+      updatedHotel,
+      { new: true }
+    )
+
+    if (!hotel) return res.status(404).json({ message: 'Hotel not found' })
+
+    // get file from multer
+    const files = req.files as Express.Multer.File[]
+
+    // upload the images to cloudinary
+    const updatedImageUrls = await uploadImages(files)
+
+    hotel.imageUrls = [...updatedImageUrls, ...(updatedHotel.imageUrls || [])]
+
+    // save hotel
+    await hotel.save()
+    res.status(201).json({
+      success: true,
+      hotel,
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Something went throw' })
+  }
+}

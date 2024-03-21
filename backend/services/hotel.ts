@@ -22,9 +22,9 @@ export async function uploadImages(imageFiles: Express.Multer.File[]) {
 
 // create hotel
 export const createHotel = async (data: any, res: Response) => {
-  const course = await HotelModel.create(data)
+  const hotel = await HotelModel.create(data)
   res.status(201).json({
     success: true,
-    course,
+    hotel,
   })
 }
