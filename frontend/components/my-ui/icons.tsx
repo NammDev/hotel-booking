@@ -23,6 +23,10 @@ import {
   Twitter,
   User,
   X,
+  Calendar,
+  MapPin,
+  Search,
+  Users,
 } from 'lucide-react'
 import { AvatarIcon, ImageIcon } from '@radix-ui/react-icons'
 
@@ -30,6 +34,10 @@ type IconProps = React.HTMLAttributes<SVGElement>
 
 export const Icons = {
   close: X,
+  calendar: Calendar,
+  locate: MapPin,
+  search: Search,
+  users: Users,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
   trash: Trash,
