@@ -26,7 +26,11 @@ export const SearchContextProvider = ({ children }: { children: ReactNode }) => 
     () => new Date(sessionStorage.getItem('checkIn') || new Date().toISOString())
   )
   const [checkOut, setCheckOut] = useState<Date>(
-    () => new Date(sessionStorage.getItem('checkOut') || new Date().toISOString())
+    () =>
+      new Date(
+        sessionStorage.getItem('checkOut') ||
+          new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+      )
   )
   const [adultCount, setAdultCount] = useState<number>(() =>
     parseInt(sessionStorage.getItem('adultCount') || '1')

@@ -16,31 +16,13 @@ interface DateRangePickerProps extends React.ComponentPropsWithoutRef<typeof Pop
   dayCount?: number
 }
 
-export function DateRangePicker({
-  dateRange,
-  dayCount,
-  className,
-  ...props
-}: DateRangePickerProps) {
+export function DateRangePicker({ className, ...props }: DateRangePickerProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const [from, to] = React.useMemo(() => {
-    let fromDay: Date | undefined
-    let toDay: Date | undefined
-
-    if (dateRange) {
-      fromDay = dateRange.from
-      toDay = dateRange.to
-    } else if (dayCount) {
-      toDay = new Date()
-      fromDay = addDays(toDay, -dayCount)
-    }
-
-    return [fromDay, toDay]
-  }, [dateRange, dayCount])
-
+  const from = new Date()
+  const to = addDays(from, 2)
   const [date, setDate] = React.useState<DateRange | undefined>({ from, to })
 
   // Create query string
