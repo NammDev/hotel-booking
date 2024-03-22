@@ -2,6 +2,8 @@ import { DateRangePicker } from '@/components/my-ui/date-range-picker'
 import { Icons } from '@/components/my-ui/icons'
 import { Shell } from '@/components/shells'
 import { Badge } from '@/components/ui/badge'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { siteConfig } from '@/config/site'
 import Link from 'next/link'
 
@@ -27,19 +29,31 @@ export default async function IndexPage() {
         </p>
         <div className='flex flex-wrap items-center justify-center gap-4 py-6'>
           <div className='border-w-8002 relative z-50 flex h-[54px] w-fit select-none flex-row items-center justify-center rounded-lg border transition-[height] duration-150 bg-gradient-to-b from-[#141414] to-[#1A1A1A]'>
-            {/* <div
-              role='button'
-              className='border-w-8002 text-w-3005 group isolate z-50 flex h-full min-w-[150px] flex-row items-center whitespace-nowrap px-4 py-2 transition-[background,min-width] duration-300 ease-out hover:text-white xl:min-w-[200px]  hover:!bg-[#292929] group rounded-l-lg'
-            >
-              <Icons.calendar className='relative h-[1.2em] w-[1.2em] shrink-0 text-w-4004 top-0 mr-3 transition-colors duration-100 group-hover:text-inherit' />
-              <div className='grid text-sm'>
-                <span className='text-balance leading-normal text-muted-foreground sm:text-sm'>
-                  When
-                </span>
-              </div>
-            </div> */}
-            <DateRangePicker align='center' />
-
+            <Popover>
+              <PopoverTrigger asChild>
+                <div
+                  role='button'
+                  className='border-w-8002 text-w-3005 group isolate z-50 flex h-full min-w-[150px] flex-row items-center whitespace-nowrap px-4 py-2 transition-[background,min-width] duration-300 ease-out hover:text-white xl:min-w-[200px]  hover:!bg-[#292929] group rounded-l-lg'
+                >
+                  <Icons.calendar className='relative h-[1.2em] w-[1.2em] shrink-0 text-w-4004 top-0 mr-3 transition-colors duration-100 group-hover:text-inherit' />
+                  <div className='grid text-sm'>
+                    <span className='text-balance leading-normal text-muted-foreground sm:text-sm'>
+                      When
+                    </span>
+                  </div>
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className='w-auto p-0 mt-4' align='center'>
+                <Calendar
+                  initialFocus
+                  mode='range'
+                  // defaultMonth={date?.from}
+                  // selected={date}
+                  // onSelect={setDate}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
             <div
               role='button'
               className='border-w-8002 text-w-3005 group isolate z-50 flex h-full min-w-[150px] flex-row items-center whitespace-nowrap px-4 py-2 transition-[background,min-width] duration-300 ease-out hover:text-white xl:min-w-[200px] hover:!bg-[#292929] group border-x'
