@@ -11,6 +11,7 @@ import userRouter from './routes/user.route'
 import authRouter from './routes/auth.route'
 import { v2 as cloudinary } from 'cloudinary'
 import myHotelRouter from './routes/my-hotel.route'
+import hotelRouter from './routes/hotel.route'
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -52,6 +53,7 @@ app.use(express.static(path.join(__dirname, '../../frontend/dist')))
 app.use('/api/users', userRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/my-hotels', myHotelRouter)
+app.use('/api/hotels', hotelRouter)
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`)
