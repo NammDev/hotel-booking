@@ -19,7 +19,6 @@ export default function SearchBar() {
   const [destination, setDestination] = useState<string>(search.destination)
   const [adultCount, setAdultCount] = useState<number>(search.adultCount)
   const [childCount, setChildCount] = useState<number>(search.childCount)
-  // strak
 
   useEffect(() => {
     console.log(date?.from, date?.to)
