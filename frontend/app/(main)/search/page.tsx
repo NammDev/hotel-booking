@@ -2,7 +2,8 @@
 
 import { searchHotels } from '@/api/hotels'
 import HotelNotFound from '@/app/(dashboard)/dashboard/hotels/[hotelId]/edit/not-found'
-import { HotelCard } from '@/components/cards/hotel-card'
+import { PageHeader, PageHeaderDescription, PageHeaderHeading } from '@/components/page-header'
+import { Products } from '@/components/products'
 import { Shell } from '@/components/shells'
 import { HotelCardSkeleton } from '@/components/skeletons/hotel-card-skeleton'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -56,18 +57,23 @@ export default function SearchPage() {
         </div>
       </Shell>
     )
-  } else if (isError) {
+  } else if (isError || !hotelData?.data?.length) {
     return <HotelNotFound />
   }
 
   return (
     <Shell>
-      <section className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-        {isSuccess &&
-          hotelData.data.map((hotel: HotelCardType) => (
-            <HotelCard key={hotel._id} hotel={hotel} href={`/dashboard/hotels/${hotel._id}`} />
-          ))}
-      </section>
+      <PageHeader>
+        <PageHeaderHeading size='sm'>Hotels</PageHeaderHeading>
+        <PageHeaderDescription size='sm'>All hotels from your search</PageHeaderDescription>
+      </PageHeader>
+      <Products
+        hotels={hotelData.data}
+        // pageCount={productsTransaction.pageCount}
+        // categories={Object.values(products.category.enumValues)}
+        // stores={storesTransaction.data}
+        // storePageCount={storesTransaction.pageCount}
+      />
     </Shell>
   )
 }
