@@ -2,9 +2,9 @@ import { cn } from '@/lib/utils'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Shell } from '../../../../components/shells'
-import { Icons } from '../../../../components/my-ui/icons'
-import { ProductCardSkeleton } from '../../../../components/skeletons/product-card-skeleton'
+import { Shell } from '../shells'
+import { Icons } from '../my-ui/icons'
+import { ProductCardSkeleton } from '../skeletons/product-card-skeleton'
 
 export default function HotelDetailLoading() {
   return (

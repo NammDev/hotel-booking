@@ -3,8 +3,8 @@
 import { fetchMyHotelById } from '@/api/hotel'
 import { QueryKeys } from '@/config/query-key'
 import { useQuery } from '@tanstack/react-query'
-import HotelDetailLoading from './detail-loading'
-import HotelDetailNotFound from './notFound'
+import HotelDetailLoading from '../../../../components/loading/hotel-detail-loading'
+import HotelDetailNotFound from '../../../../components/notFound/hotel-detail-notFound'
 
 export default function DetailPage({ params }: { params: { hotelId: string } }) {
   const hotelId = params.hotelId
