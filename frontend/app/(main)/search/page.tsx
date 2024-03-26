@@ -489,7 +489,7 @@ export default function SearchPage() {
         </div>
         <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
           {hotelData.data.map((hotel) => (
-            <ProductCard key={hotel._id} hotel={hotel} />
+            <ProductCard key={hotel._id} hotel={hotel} variant='wander' />
           ))}
         </div>
         {hotelData.data.length ? (
