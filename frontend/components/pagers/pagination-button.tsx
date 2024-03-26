@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { usePathname, useRouter } from 'next/navigation'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -13,26 +12,18 @@ import { Button } from '@/components/ui/button'
 interface PaginationButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   pageCount: number
   page?: string
-  per_page?: string
-  sort?: string
-  createQueryString: (params: Record<string, string | number | null>) => string
+  onPageChange: (page: number) => void
   siblingCount?: number
 }
 
 export function PaginationButton({
   pageCount,
   page,
-  per_page,
-  sort,
-  createQueryString,
+  onPageChange,
   siblingCount = 1,
   className,
   ...props
 }: PaginationButtonProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const [isPending, startTransition] = React.useTransition()
-
   // Memoize pagination range to avoid unnecessary re-renders
   const paginationRange = React.useMemo(() => {
     const delta = siblingCount + 2
@@ -69,17 +60,9 @@ export function PaginationButton({
         size='icon'
         className='hidden size-8 lg:flex'
         onClick={() => {
-          startTransition(() => {
-            router.push(
-              `${pathname}?${createQueryString({
-                page: 1,
-                per_page: per_page ?? null,
-                sort: sort ?? null,
-              })}`
-            )
-          })
+          onPageChange(1)
         }}
-        disabled={Number(page) === 1 || isPending}
+        disabled={Number(page) === 1}
       >
         <DoubleArrowLeftIcon className='size-4' aria-hidden='true' />
       </Button>
@@ -89,17 +72,9 @@ export function PaginationButton({
         size='icon'
         className='size-8'
         onClick={() => {
-          startTransition(() => {
-            router.push(
-              `${pathname}?${createQueryString({
-                page: Number(page) - 1,
-                per_page: per_page ?? null,
-                sort: sort ?? null,
-              })}`
-            )
-          })
+          onPageChange(Number(page) - 1)
         }}
-        disabled={Number(page) === 1 || isPending}
+        disabled={Number(page) === 1}
       >
         <ChevronLeftIcon className='size-4' aria-hidden='true' />
       </Button>
@@ -123,17 +98,8 @@ export function PaginationButton({
             size='icon'
             className='size-8'
             onClick={() => {
-              startTransition(() => {
-                router.push(
-                  `${pathname}?${createQueryString({
-                    page: pageNumber,
-                    per_page: per_page ?? null,
-                    sort: sort ?? null,
-                  })}`
-                )
-              })
+              onPageChange(Number(pageNumber))
             }}
-            disabled={isPending}
           >
             {pageNumber}
           </Button>
@@ -145,17 +111,9 @@ export function PaginationButton({
         size='icon'
         className='size-8'
         onClick={() => {
-          startTransition(() => {
-            router.push(
-              `${pathname}?${createQueryString({
-                page: Number(page) + 1,
-                per_page: per_page ?? null,
-                sort: sort ?? null,
-              })}`
-            )
-          })
+          onPageChange(Number(page) + 1)
         }}
-        disabled={Number(page) === (pageCount ?? 10) || isPending}
+        disabled={Number(page) === (pageCount ?? 10)}
       >
         <ChevronRightIcon className='size-4' aria-hidden='true' />
       </Button>
@@ -165,15 +123,9 @@ export function PaginationButton({
         size='icon'
         className='hidden size-8 lg:flex'
         onClick={() => {
-          router.push(
-            `${pathname}?${createQueryString({
-              page: pageCount ?? 10,
-              per_page: per_page ?? null,
-              sort: sort ?? null,
-            })}`
-          )
+          onPageChange(Number(pageCount))
         }}
-        disabled={Number(page) === (pageCount ?? 10) || isPending}
+        disabled={Number(page) === (pageCount ?? 10)}
       >
         <DoubleArrowRightIcon className='size-4' aria-hidden='true' />
       </Button>

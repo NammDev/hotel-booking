@@ -5,21 +5,12 @@ import { Icons } from '@/components/my-ui/icons'
 import { ProductType } from '@/lib/type'
 
 export const sortOptions = [
-  { label: 'Date: Old to new', value: 'createdAt.asc' },
+  { label: 'Star Rating', value: 'starRating' },
   {
-    label: 'Date: New to old',
-    value: 'createdAt.desc',
+    label: 'Price Per Night (low to high)',
+    value: 'pricePerNightAsc',
   },
-  { label: 'Price: Low to high', value: 'price.asc' },
-  { label: 'Price: High to low', value: 'price.desc' },
-  {
-    label: 'Alphabetical: A to Z',
-    value: 'name.asc',
-  },
-  {
-    label: 'Alphabetical: Z to A',
-    value: 'name.desc',
-  },
+  { label: 'Price Per Night (high to low)', value: 'pricePerNightDesc' },
 ]
 
 export const productCategories = [

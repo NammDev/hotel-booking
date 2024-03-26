@@ -21,7 +21,7 @@ import { Icons } from '../my-ui/icons'
 import { PlaceholderImage } from '../my-ui/placeholder'
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  hotel: any
+  hotel: HotelType
   variant?: 'default' | 'switchable'
   isAddedToCart?: boolean
   onSwitch?: () => Promise<void>
@@ -39,13 +39,13 @@ export function ProductCard({
 
   return (
     <Card className={cn('size-full overflow-hidden rounded-sm', className)} {...props}>
-      <Link aria-label={hotel.name} href={`/hotel/${hotel.id}`}>
+      <Link aria-label={hotel.name} href={`/hotel/${hotel._id}`}>
         <CardHeader className='border-b p-0'>
           <AspectRatio ratio={4 / 3}>
-            {hotel.images?.length ? (
+            {hotel.imageUrls?.length ? (
               <Image
-                src={hotel.images[0]?.url ?? '/images/hotel-placeholder.webp'}
-                alt={hotel.images[0]?.name ?? hotel.name}
+                src={hotel.imageUrls[0]}
+                alt={hotel.name}
                 className='object-cover'
                 sizes='(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw'
                 fill
@@ -58,10 +58,12 @@ export function ProductCard({
         </CardHeader>
         <span className='sr-only'>{hotel.name}</span>
       </Link>
-      <Link href={`/hotel/${hotel.id}`} tabIndex={-1}>
+      <Link href={`/hotel/${hotel._id}`} tabIndex={-1}>
         <CardContent className='space-y-1.5 p-4'>
           <CardTitle className='line-clamp-1'>{hotel.name}</CardTitle>
-          <CardDescription className='line-clamp-1'>{formatPrice(hotel.price)}</CardDescription>
+          <CardDescription className='line-clamp-1'>
+            {formatPrice(hotel.pricePerNight)}
+          </CardDescription>
         </CardContent>
       </Link>
       <CardFooter className='p-4 pt-1'>
@@ -74,7 +76,7 @@ export function ProductCard({
               Add to cart
             </Button>
             <Link
-              href={`/preview/product/${hotel.id}`}
+              href={`/preview/product/${hotel._id}`}
               title='Preview'
               className={cn(
                 buttonVariants({
