@@ -36,15 +36,48 @@ import { Slider } from './ui/slider'
 import { MultiSelect } from './my-ui/multi-select'
 import { HotelType } from '@/lib/type'
 import { ProductCard } from './cards/product-card'
+import { PaginationButton } from './pagers/pagination-button'
 // import { ProductCard } from '@/components/cards/product-card'
 // import { PaginationButton } from '@/components/pagers/pagination-button'
 
 const categories = ['skateboards', 'clothing', 'shoes', 'accessories']
 
 const stores = [
-  { id: 1, name: 'Store 1', productCount: 10 },
-  { id: 2, name: 'Store 2', productCount: 5 },
-  { id: 3, name: 'Store 3', productCount: 8 },
+  { id: 4, name: 'Store 4', productCount: 12 },
+  { id: 5, name: 'Store 5', productCount: 3 },
+  { id: 6, name: 'Store 6', productCount: 7 },
+  { id: 7, name: 'Store 7', productCount: 9 },
+  { id: 8, name: 'Store 8', productCount: 6 },
+  { id: 4, name: 'Store 4', productCount: 12 },
+  { id: 5, name: 'Store 5', productCount: 3 },
+  { id: 6, name: 'Store 6', productCount: 7 },
+  { id: 7, name: 'Store 7', productCount: 9 },
+  { id: 8, name: 'Store 8', productCount: 6 },
+  { id: 4, name: 'Store 4', productCount: 12 },
+  { id: 5, name: 'Store 5', productCount: 3 },
+  { id: 6, name: 'Store 6', productCount: 7 },
+  { id: 7, name: 'Store 7', productCount: 9 },
+  { id: 8, name: 'Store 8', productCount: 6 },
+  { id: 4, name: 'Store 4', productCount: 12 },
+  { id: 5, name: 'Store 5', productCount: 3 },
+  { id: 6, name: 'Store 6', productCount: 7 },
+  { id: 7, name: 'Store 7', productCount: 9 },
+  { id: 8, name: 'Store 8', productCount: 6 },
+  { id: 4, name: 'Store 4', productCount: 12 },
+  { id: 5, name: 'Store 5', productCount: 3 },
+  { id: 6, name: 'Store 6', productCount: 7 },
+  { id: 7, name: 'Store 7', productCount: 9 },
+  { id: 8, name: 'Store 8', productCount: 6 },
+  { id: 4, name: 'Store 4', productCount: 12 },
+  { id: 5, name: 'Store 5', productCount: 3 },
+  { id: 6, name: 'Store 6', productCount: 7 },
+  { id: 7, name: 'Store 7', productCount: 9 },
+  { id: 8, name: 'Store 8', productCount: 6 },
+  { id: 4, name: 'Store 4', productCount: 12 },
+  { id: 5, name: 'Store 5', productCount: 3 },
+  { id: 6, name: 'Store 6', productCount: 7 },
+  { id: 7, name: 'Store 7', productCount: 9 },
+  { id: 8, name: 'Store 8', productCount: 6 },
 ]
 
 interface ProductsProps {
@@ -64,7 +97,8 @@ export function Products({
 // stores,
 // storePageCount,
 ProductsProps) {
-  const storePageCount = 1
+  const pageCount = 2
+  const storePageCount = 2
   const id = useId()
   const router = useRouter()
   const pathname = usePathname()
@@ -76,8 +110,8 @@ ProductsProps) {
   const sort = searchParams?.get('sort') ?? 'createdAt.desc'
   const store_ids = searchParams?.get('store_ids')
   const store_page = searchParams?.get('store_page') ?? '1'
-  const categoriesParam = 'clothing'
-  const subcategoriesParam = searchParams?.get('subcategories')
+  const categoriesParam = searchParams?.get('categories')
+  // const subcategoriesParam = searchParams?.get('subcategories')
   const active = searchParams?.get('active') ?? 'true'
 
   console.log(categories)
@@ -270,6 +304,20 @@ ProductsProps) {
                   />
                 </Card>
               ) : null}
+              {categories?.length ? (
+                <Card className='space-y-4 rounded-lg p-3'>
+                  <h3 className='text-sm font-medium tracking-wide text-foreground'>Categories</h3>
+                  <MultiSelect
+                    placeholder='Select categories'
+                    selected={selectedCategories}
+                    setSelected={setSelectedCategories}
+                    options={categories.map((c) => ({
+                      label: toTitleCase(c),
+                      value: c,
+                    }))}
+                  />
+                </Card>
+              ) : null}
               {/* {category ? (
                 <Card className='space-y-4 rounded-lg p-3'>
                   <h3 className='text-sm font-medium tracking-wide text-foreground'>
@@ -434,7 +482,7 @@ ProductsProps) {
           <ProductCard key={hotel._id} hotel={hotel} />
         ))}
       </div>
-      {/* {hotels.length ? (
+      {hotels.length ? (
         <PaginationButton
           pageCount={pageCount}
           page={page}
@@ -442,7 +490,7 @@ ProductsProps) {
           sort={sort}
           createQueryString={createQueryString}
         />
-      ) : null} */}
+      ) : null}
     </section>
   )
 }
