@@ -95,3 +95,14 @@ export const getHotels = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Something went wrong' })
   }
 }
+
+export const getHotelById = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id.toString()
+    const hotel = await HotelModel.findById(id)
+    res.json(hotel)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Error fetching hotel' })
+  }
+}

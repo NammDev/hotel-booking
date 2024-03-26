@@ -30,7 +30,7 @@ export function SiteHeader({ user }: { user: UserType | undefined }) {
   const initials = `${user?.firstName?.charAt(0) ?? ''} ${user?.lastName?.charAt(0) ?? ''}`
 
   return (
-    <header className='sticky top-0 z-50 w-full border-b bg-background'>
+    <header className='sticky top-0 z-50 w-full bg-background'>
       <div className='container flex h-16 items-center'>
         <MainNav items={siteConfig.mainNav} />
         <MobileNav items={siteConfig.mainNav} />
