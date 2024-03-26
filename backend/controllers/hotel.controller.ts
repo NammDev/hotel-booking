@@ -72,7 +72,7 @@ export const getHotels = async (req: Request, res: Response) => {
         break
     }
 
-    const pageSize = 5
+    const pageSize = 8
     const pageNumber = parseInt(req.query.page ? req.query.page.toString() : '1')
     const skip = (pageNumber - 1) * pageSize
 

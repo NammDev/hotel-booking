@@ -39,7 +39,7 @@ export function ProductCard({
 
   return (
     <Card className={cn('size-full overflow-hidden rounded-sm', className)} {...props}>
-      <Link aria-label={hotel.name} href={`/hotel/${hotel._id}`}>
+      <Link aria-label={hotel.name} href={`/detail/${hotel._id}`}>
         <CardHeader className='p-0'>
           <AspectRatio ratio={7 / 6}>
             {hotel.imageUrls?.length ? (
