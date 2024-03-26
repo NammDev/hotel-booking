@@ -487,14 +487,6 @@ export default function SearchPage() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        {!hotelData.data.length ? (
-          <div className='mx-auto flex max-w-xs flex-col space-y-1.5'>
-            <h1 className='text-center text-2xl font-bold'>No products found</h1>
-            <p className='text-center text-muted-foreground'>
-              Try changing your filters, or check back later for new products
-            </p>
-          </div>
-        ) : null}
         <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
           {hotelData.data.map((hotel) => (
             <ProductCard key={hotel._id} hotel={hotel} />
