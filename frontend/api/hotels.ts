@@ -1,4 +1,4 @@
-import { HotelSearchResponse } from '@/lib/type'
+import { HotelSearchResponse, HotelType } from '@/lib/type'
 import { axiosInstance } from '.'
 
 export type SearchParamsType = {
@@ -35,5 +35,10 @@ export const searchHotels = async (
   // searchParams.stars?.forEach((star) => queryParams.append('stars', star))
 
   const response = await axiosInstance.get(`/api/hotels/search?${queryParams.toString()}`)
+  return response.data
+}
+
+export const fetchHotelById = async (hotelId: string): Promise<HotelType> => {
+  const response = await axiosInstance.get(`/api/hotels/${hotelId}`)
   return response.data
 }

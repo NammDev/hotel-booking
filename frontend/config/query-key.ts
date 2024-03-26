@@ -3,4 +3,5 @@ export const QueryKeys = {
   MYHOTELS: 'fetchMyHotels',
   MYHOTEL: 'fetchMyHotelById',
   SEARCHHOTEL: 'searchHotel',
+  HOTEL: 'fetchHotelById',
 }

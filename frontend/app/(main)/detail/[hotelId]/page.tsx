@@ -1,42 +1,44 @@
 'use client'
 
-import { fetchMyHotelById } from '@/api/hotel'
 import { QueryKeys } from '@/config/query-key'
 import { useQuery } from '@tanstack/react-query'
 import HotelDetailLoading from '../../../../components/loading/hotel-detail-loading'
 import HotelDetailNotFound from '../../../../components/notFound/hotel-detail-notFound'
+import { fetchHotelById } from '@/api/hotels'
+import { Icons } from '@/components/my-ui/icons'
 
 export default function DetailPage({ params }: { params: { hotelId: string } }) {
   const hotelId = params.hotelId
 
   const {
-    data: hotelData,
+    data: hotel,
     isFetching,
     isError,
   } = useQuery({
-    queryKey: [QueryKeys.MYHOTEL, hotelId],
-    queryFn: () => fetchMyHotelById(hotelId),
+    queryKey: [QueryKeys.HOTEL, hotelId],
+    queryFn: () => fetchHotelById(hotelId),
   })
 
   if (isFetching) {
     return <HotelDetailLoading />
-  } else if (isError || !hotelData?.data) {
+  } else if (!hotel) {
     return <HotelDetailNotFound />
+  } else if (isError) {
+    return <div>Error on get page</div>
   }
 
   return (
     <div className='space-y-6'>
-      Hello
-      {/* <div>
+      <div>
         <span className='flex'>
-          {Array.from({ length: hotel.starRating }).map(() => (
-            <AiFillStar className='fill-yellow-400' />
+          {Array.from({ length: hotel.starRating }).map((_, index) => (
+            <Icons.store key={index} className='fill-yellow-400' />
           ))}
         </span>
         <h1 className='text-3xl font-bold'>{hotel.name}</h1>
       </div>
 
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
+      {/* <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
         {hotel.imageUrls.map((image) => (
           <div className='h-[300px]'>
             <img
