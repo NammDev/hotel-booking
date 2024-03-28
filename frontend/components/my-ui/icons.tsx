@@ -27,17 +27,22 @@ import {
   MapPin,
   Search,
   Users,
+  UserPlus,
+  Minus,
 } from 'lucide-react'
 import { AvatarIcon, ImageIcon } from '@radix-ui/react-icons'
+import { ReactNode } from 'react'
 
 type IconProps = React.HTMLAttributes<SVGElement>
 
 export const Icons = {
   close: X,
+  minus: Minus,
   calendar: Calendar,
   locate: MapPin,
   search: Search,
   users: Users,
+  userPlus: UserPlus,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
   trash: Trash,
@@ -58,6 +63,21 @@ export const Icons = {
   laptop: Laptop,
   twitter: Twitter,
   check: Check,
+  close2: (props: React.HTMLAttributes<HTMLElement>) => (
+    <span {...props}>
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        fill='none'
+        viewBox='0 0 24 24'
+        stroke-width='1.5'
+        stroke='currentColor'
+        aria-hidden='true'
+        className='w-4 h-4'
+      >
+        <path stroke-linecap='round' stroke-linejoin='round' d='M6 18L18 6M6 6l12 12'></path>
+      </svg>
+    </span>
+  ),
   logo: (props: IconProps) => (
     <svg
       xmlns='http://www.w3.org/2000/svg'
