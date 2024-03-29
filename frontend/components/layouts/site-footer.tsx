@@ -10,7 +10,7 @@ import { JoinNewsletterForm } from '../forms/join-newsletter-form'
 
 export function SiteFooter() {
   return (
-    <footer className='w-full border-t bg-background'>
+    <footer className='w-full bg-background'>
       <Shell>
         <section
           id='footer-content'

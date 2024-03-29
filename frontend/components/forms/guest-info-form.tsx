@@ -1,7 +1,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Icons } from '../my-ui/icons'
 import { Calendar } from '../ui/calendar'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import type { DateRange } from 'react-day-picker'
 import { addDays, differenceInDays } from 'date-fns'
 import { useSearchContext } from '@/context/SearchContext'
@@ -36,6 +36,8 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
   const [date, setDate] = useState<DateRange | undefined>(defaultSelected)
   const [adultCount, setAdultCount] = useState<number>(search.adultCount)
   const [childCount, setChildCount] = useState<number>(search.childCount)
+  const [totalNights, setTotalNights] = useState<number>(0)
+  const [totalGuests, setTotalGuests] = useState<number>(search.adultCount + search.childCount)
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
@@ -53,8 +55,18 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
     }
   }
 
-  const totalGuests = adultCount + childCount
-  const totalNights = date && date.from && date.to ? differenceInDays(date.to, date.from) : 0
+  useEffect(() => {
+    if (search.adultCount && search.adultCount) {
+      setTotalGuests(search.adultCount + search.childCount)
+    }
+  }, [search.adultCount, search.childCount])
+
+  useEffect(() => {
+    if (search.checkIn && search.checkOut) {
+      const nights = date && date.from && date.to ? differenceInDays(date.to, date.from) : 0
+      setTotalNights(Math.ceil(nights))
+    }
+  }, [date, search.checkIn, search.checkOut])
 
   return (
     <>

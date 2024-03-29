@@ -29,6 +29,7 @@ import {
   Users,
   UserPlus,
   Minus,
+  Eye,
 } from 'lucide-react'
 import { AvatarIcon, ImageIcon } from '@radix-ui/react-icons'
 import { ReactNode } from 'react'
@@ -36,6 +37,7 @@ import { ReactNode } from 'react'
 type IconProps = React.HTMLAttributes<SVGElement>
 
 export const Icons = {
+  eye: Eye,
   close: X,
   minus: Minus,
   calendar: Calendar,
