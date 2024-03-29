@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import HotelModel from '../models/hotel.model'
 import { HotelSearchResponse } from '../shared/types'
+import { stripe } from '../utils/stripe'
 
 const constructSearchQuery = (queryParams: any) => {
   let constructedQuery: any = {}
@@ -105,4 +106,30 @@ export const getHotelById = async (req: Request, res: Response) => {
     console.log(error)
     res.status(500).json({ message: 'Error fetching hotel' })
   }
+}
+
+export const paymentIntent = async (req: Request, res: Response) => {
+  const hotelId = req.params.hotelId
+  const hotel = await HotelModel.findById(hotelId)
+  if (!hotel) return res.status(400).json({ message: 'Hotel not found' })
+
+  const { numberOfNights } = req.body
+  const totalCost = hotel.pricePerNight * numberOfNights
+
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: totalCost * 100,
+    currency: 'cad',
+    metadata: {
+      hotelId,
+      userId: req.userId as string,
+    },
+  })
+  if (!paymentIntent.client_secret)
+    return res.status(500).json({ message: 'Error creating payment intent' })
+
+  res.send({
+    paymentIntentId: paymentIntent.id,
+    clientSecret: paymentIntent.client_secret.toString(),
+    totalCost,
+  })
 }
