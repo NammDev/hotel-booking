@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 type SearchContext = {
   destination: string
@@ -24,22 +24,23 @@ type SearchContextProviderProps = {
 }
 
 export const SearchContextProvider = ({ children }: SearchContextProviderProps) => {
-  const [destination, setDestination] = useState<string>(
-    () => sessionStorage.getItem('destination') || ''
-  )
-  const [checkIn, setCheckIn] = useState<Date>(
-    () => new Date(sessionStorage.getItem('checkIn') || new Date().toISOString())
-  )
-  const [checkOut, setCheckOut] = useState<Date>(
-    () => new Date(sessionStorage.getItem('checkOut') || new Date().toISOString())
-  )
-  const [adultCount, setAdultCount] = useState<number>(() =>
-    parseInt(sessionStorage.getItem('adultCount') || '1')
-  )
-  const [childCount, setChildCount] = useState<number>(() =>
-    parseInt(sessionStorage.getItem('childCount') || '1')
-  )
-  const [hotelId, setHotelId] = useState<string>(() => sessionStorage.getItem('hotelID') || '')
+  const [destination, setDestination] = useState<string>('')
+  const [checkIn, setCheckIn] = useState<Date>(new Date())
+  const [checkOut, setCheckOut] = useState<Date>(new Date())
+  const [adultCount, setAdultCount] = useState<number>(1)
+  const [childCount, setChildCount] = useState<number>(1)
+  const [hotelId, setHotelId] = useState<string>('')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setDestination(sessionStorage.getItem('destination') || '')
+      setCheckIn(new Date(sessionStorage.getItem('checkIn') || new Date().toISOString()))
+      setCheckOut(new Date(sessionStorage.getItem('checkOut') || new Date().toISOString()))
+      setAdultCount(parseInt(sessionStorage.getItem('adultCount') || '1'))
+      setChildCount(parseInt(sessionStorage.getItem('childCount') || '1'))
+      setHotelId(sessionStorage.getItem('hotelId') || '')
+    }
+  }, [])
 
   const saveSearchValues = (
     destination: string,
