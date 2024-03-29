@@ -3,7 +3,7 @@
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Icons } from '@/components/my-ui/icons'
-import { addDays, format } from 'date-fns'
+import { addDays, format, isSameDay } from 'date-fns'
 import { useSearchContext } from '@/context/SearchContext'
 import { Input } from './ui/input'
 import { useRouter } from 'next/navigation'
@@ -122,7 +122,7 @@ export default function SearchBar() {
                           >
                             <Icons.calendar className='mr-3 h-4 w-4 opacity-50' />
 
-                            {field.value?.from ? (
+                            {!isSameDay(field.value.from, field.value.to) ? (
                               field.value?.to ? (
                                 <>
                                   {format(field.value?.from, 'LLL dd, y')} -{' '}
