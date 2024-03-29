@@ -1,43 +1,29 @@
 import * as React from 'react'
 import Link from 'next/link'
-import type { Category } from '@/types'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Icons } from '../my-ui/icons'
 
-interface CategoryCardProps {
-  category: Category
-}
-
-export function CategoryCard({ category }: CategoryCardProps) {
-  const productCountPromise = 23
-
+export function CategoryCard({ category }: { category: any }) {
   return (
-    <Link href={`/categories/${category.title}`}>
-      <span className='sr-only'>{category.title}</span>
-      <Card className='relative flex size-full flex-col items-center justify-center overflow-hidden rounded-lg bg-transparent transition-colors hover:bg-muted/50'>
-        <CardHeader>
-          <div className='grid size-11 place-items-center rounded-full border-2'>
-            <category.icon className='size-5' aria-hidden='true' />
-          </div>
-        </CardHeader>
-        <CardContent className='flex flex-col items-center space-y-1.5'>
-          <CardTitle className='capitalize'>{category.title}</CardTitle>
-          <React.Suspense fallback={<Skeleton className='h-4 w-20' />}>
-            <ProductCount productCountPromise={productCountPromise} />
-          </React.Suspense>
-        </CardContent>
+    <Link href={`/collections/${category.slug}`}>
+      <Card className='relative flex size-full flex-col bg-muted p-4 transition-colors hover:bg-muted/50'>
+        <category.icon className='size-10 text-muted-foreground' aria-hidden='true' />
+        <div className='flex flex-1 flex-col space-y-1.5 pb-4 pt-10'>
+          <CardTitle className='capitalize'>{category.name}</CardTitle>
+          <CardDescription>{category.description}</CardDescription>
+        </div>
+        <React.Suspense
+          fallback={
+            <div className='pt-1'>
+              <Skeleton className='h-4 w-20' />
+            </div>
+          }
+        >
+          <CardDescription>322 products</CardDescription>
+        </React.Suspense>
       </Card>
     </Link>
   )
-}
-
-interface ProductCountProps {
-  productCountPromise: number
-}
-
-async function ProductCount({ productCountPromise }: ProductCountProps) {
-  const productCount = productCountPromise
-
-  return <CardDescription>{productCount} products</CardDescription>
 }
