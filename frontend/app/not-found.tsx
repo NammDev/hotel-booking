@@ -7,7 +7,7 @@ import { Icons } from '@/components/my-ui/icons'
 export default function Component() {
   return (
     <MarketingLayout>
-      <div className='flex flex-col min-h-[100vh]'>
+      <div className='flex flex-col pt-32'>
         <header className='flex-1 flex items-center justify-center flex-col text-center py-8'>
           <div className='space-y-3'>
             <Link className='flex items-center justify-center' href='#'>
