@@ -1,26 +1,38 @@
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Icons } from '../my-ui/icons'
 import { Calendar } from '../ui/calendar'
-import { FormEvent, useEffect, useState } from 'react'
-import type { DateRange } from 'react-day-picker'
-import { addDays, differenceInDays } from 'date-fns'
+import { addDays, isSameDay } from 'date-fns'
 import { useSearchContext } from '@/context/SearchContext'
 import NcInputNumber from '../my-ui/nc-input-number'
 import { usePathname, useRouter } from 'next/navigation'
 import { useProfile } from '@/hooks/use-profile'
 import { Button } from '../ui/button'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Form, FormField, FormItem, FormMessage } from '../ui/form'
 
 type Props = {
   hotelId: string
   pricePerNight: number
 }
 
-type GuestInfoFormData = {
-  checkIn: Date
-  checkOut: Date
-  adultCount: number
-  childCount: number
-}
+export const formSchema = z.object({
+  destination: z.string().optional(),
+  dates: z.object({
+    from: z.date(),
+    to: z.date(),
+  }),
+  guests: z.object({
+    adults: z
+      .number()
+      .min(1, { message: 'Please select at least 1 adult' })
+      .max(12, { message: 'Max 12 adults occupancy' }),
+    childrens: z.number().min(0).max(12, { message: 'Max 12 adults occupancy' }),
+  }),
+})
+
+type FormType = z.infer<typeof formSchema>
 
 const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
   const search = useSearchContext()
@@ -29,24 +41,28 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
 
   const { data: user } = useProfile()
 
-  const defaultSelected: DateRange = {
-    from: search.checkIn || new Date(),
-    to: search.checkOut || addDays(new Date(), 1),
-  }
-  const [date, setDate] = useState<DateRange | undefined>(defaultSelected)
-  const [adultCount, setAdultCount] = useState<number>(search.adultCount)
-  const [childCount, setChildCount] = useState<number>(search.childCount)
-  const [totalNights, setTotalNights] = useState<number>(0)
-  const [totalGuests, setTotalGuests] = useState<number>(search.adultCount + search.childCount)
+  const form = useForm<FormType>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      destination: search.destination,
+      dates: {
+        from: search.checkIn || new Date(),
+        to: search.checkOut || addDays(new Date(), 1),
+      },
+      guests: {
+        adults: search.adultCount,
+        childrens: search.childCount,
+      },
+    },
+  })
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault()
+  function onSubmit(data: FormType) {
     search.saveSearchValues(
-      search.destination,
-      date?.from as Date,
-      date?.to as Date,
-      adultCount,
-      childCount
+      data.destination || '',
+      data.dates.from,
+      data.dates.to,
+      data.guests.adults,
+      data.guests.childrens
     )
     if (user) {
       router.push(`/hotel/${hotelId}/booking`)
@@ -55,21 +71,8 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
     }
   }
 
-  useEffect(() => {
-    if (search.adultCount && search.adultCount) {
-      setTotalGuests(search.adultCount + search.childCount)
-    }
-  }, [search.adultCount, search.childCount])
-
-  useEffect(() => {
-    if (search.checkIn && search.checkOut) {
-      const nights = date && date.from && date.to ? differenceInDays(date.to, date.from) : 0
-      setTotalNights(Math.ceil(nights))
-    }
-  }, [date, search.checkIn, search.checkOut])
-
   return (
-    <>
+    <Form {...form}>
       {/* PRICE */}
       <div className='flex justify-between'>
         <span className='text-3xl font-semibold'>
@@ -82,101 +85,121 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
       </div>
 
       {/* FORM */}
-      <div className='flex flex-col border border-neutral-200 dark:border-neutral-700 rounded-3xl '>
-        <Popover>
-          <PopoverTrigger className='flex-1 flex relative p-3 items-center space-x-3 focus:outline-none '>
-            <div className='text-neutral-300 dark:text-neutral-400'>
-              <Icons.calendar className='w-5 h-5 lg:w-7 lg:h-7' />
-            </div>
-            <div className='flex-grow text-left'>
-              <span className='block font-semibold xl:text-lg'>
-                {defaultSelected.from?.toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: '2-digit',
-                }) || 'Add dates'}
-                {defaultSelected.to
-                  ? ' - ' +
-                    defaultSelected.to?.toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: '2-digit',
-                    })
-                  : ''}
-              </span>
-              <span className='block mt-1 text-sm font-light leading-none text-neutral-400'>
-                {'Check in - Check out'}
-              </span>
-            </div>
-            {defaultSelected.from && (
-              <Icons.close2
-                className='absolute z-10 w-5 h-5 lg:w-6 lg:h-6 text-sm bg-neutral-200 dark:bg-neutral-800 rounded-full flex items-center justify-center right-1 lg:right-3 top-1/2 transform -translate-y-1/2'
-                onClick={() => setDate(undefined)}
-              />
-            )}
-          </PopoverTrigger>
-          <PopoverContent className='w-auto p-0 mt-2' align='center'>
-            <Calendar
-              initialFocus
-              mode='range'
-              defaultMonth={date?.from}
-              selected={date}
-              onSelect={setDate}
-              numberOfMonths={2}
-              disabled={{ before: new Date() }}
-            />
-          </PopoverContent>
-        </Popover>
+      <form className='flex flex-col border border-neutral-200 dark:border-neutral-700 rounded-3xl '>
+        <FormField
+          control={form.control}
+          name='dates'
+          render={({ field }) => (
+            <FormItem className='z-10 relative flex flex-1'>
+              <Popover>
+                <PopoverTrigger className='flex-1 flex relative p-3 items-center space-x-3 focus:outline-none '>
+                  <div className='text-neutral-300 dark:text-neutral-400'>
+                    <Icons.calendar className='w-5 h-5 lg:w-7 lg:h-7' />
+                  </div>
+                  <div className='flex-grow text-left'>
+                    <span className='block font-semibold xl:text-lg'>
+                      {isSameDay(field.value.from, field.value.to)
+                        ? 'Add Dates'
+                        : field.value.from?.toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: '2-digit',
+                          }) +
+                          ' - ' +
+                          field.value.to?.toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: '2-digit',
+                          })}
+                    </span>
+                    <span className='block mt-1 text-sm font-light leading-none text-neutral-400'>
+                      {'Check in - Check out'}
+                    </span>
+                  </div>
+                  {!isSameDay(field.value.from, field.value.to) && (
+                    <Icons.close2
+                      className='absolute z-10 w-5 h-5 lg:w-6 lg:h-6 text-sm bg-neutral-200 dark:bg-neutral-800 rounded-full flex items-center justify-center right-1 lg:right-3 top-1/2 transform -translate-y-1/2'
+                      onClick={() => field.onChange(undefined)}
+                    />
+                  )}
+                </PopoverTrigger>
+                <PopoverContent className='w-auto p-0 mt-4' align='center'>
+                  <Calendar
+                    initialFocus
+                    mode='range'
+                    defaultMonth={field.value.from}
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    numberOfMonths={2}
+                    disabled={{ before: new Date() }}
+                  />
+                </PopoverContent>
+              </Popover>
+            </FormItem>
+          )}
+        />
         <div className='w-full border-b border-neutral-200 dark:border-neutral-700'></div>
-        <Popover>
-          <PopoverTrigger className='relative z-10 flex-1 flex text-left items-center p-3 space-x-3 focus:outline-none'>
-            <div className='text-neutral-300 dark:text-neutral-400'>
-              <Icons.userPlus className='w-5 h-5 lg:w-7 lg:h-7' />
-            </div>
-            <div className='flex-grow'>
-              <span className='block font-semibold xl:text-lg'>{totalGuests || ''} Guests</span>
-              <span className='block mt-1 text-sm font-light leading-none text-neutral-400'>
-                {totalGuests ? 'Guests' : 'Add guests'}
-              </span>
-            </div>
+        <FormField
+          control={form.control}
+          name='guests'
+          render={({ field }) => (
+            <FormItem className='z-10 relative flex flex-1'>
+              <Popover>
+                <PopoverTrigger className='relative z-10 flex-1 flex text-left items-center p-3 space-x-3 focus:outline-none'>
+                  <div className='text-neutral-300 dark:text-neutral-400'>
+                    <Icons.userPlus className='w-5 h-5 lg:w-7 lg:h-7' />
+                  </div>
+                  <div className='flex-grow'>
+                    <span className='block font-semibold xl:text-lg'>
+                      {field.value.adults || ''} Guests
+                    </span>
+                    <span className='block mt-1 text-sm font-light leading-none text-neutral-400'>
+                      {field.value.adults ? 'Guests' : 'Add guests'}
+                    </span>
+                  </div>
 
-            {!!totalGuests && (
-              <Icons.close2
-                className='absolute z-10 w-5 h-5 lg:w-6 lg:h-6 text-sm bg-neutral-200 dark:bg-neutral-800 rounded-full flex items-center justify-center right-1 lg:right-3 top-1/2 transform -translate-y-1/2'
-                onClick={() => {
-                  setAdultCount(0)
-                  setChildCount(0)
-                }}
-              />
-            )}
-          </PopoverTrigger>
-          <PopoverContent className='w-full sm:min-w-[340px] max-w-sm bg-white dark:bg-neutral-800 top-full mt-3 py-5 sm:py-6 px-4 sm:px-8 rounded-3xl shadow-xl ring-1 ring-black ring-opacity-5'>
-            <NcInputNumber
-              className='w-full'
-              defaultValue={adultCount}
-              onChange={(value) => setAdultCount(value)}
-              max={10}
-              min={1}
-              label='Adults'
-              desc='Ages 13 or above'
-            />
-            <NcInputNumber
-              className='w-full mt-6'
-              defaultValue={childCount}
-              onChange={(value) => setChildCount(value)}
-              max={4}
-              label='Children'
-              desc='Ages 2–12'
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
+                  {!!field.value.adults && (
+                    <Icons.close2
+                      className='absolute z-10 w-5 h-5 lg:w-6 lg:h-6 text-sm bg-neutral-200 dark:bg-neutral-800 rounded-full flex items-center justify-center right-1 lg:right-3 top-1/2 transform -translate-y-1/2'
+                      onClick={() => {
+                        field.onChange({ adults: 0, childrens: 0 })
+                      }}
+                    />
+                  )}
+                </PopoverTrigger>
+                <PopoverContent className='w-full sm:min-w-[340px] max-w-sm bg-white dark:bg-neutral-800 top-full mt-3 py-5 sm:py-6 px-4 sm:px-8 rounded-3xl shadow-xl ring-1 ring-black ring-opacity-5'>
+                  <NcInputNumber
+                    className='w-full'
+                    defaultValue={field.value.adults}
+                    onChange={(value) => field.onChange({ ...field.value, adults: value })}
+                    max={10}
+                    min={1}
+                    label='Adults'
+                    desc='Ages 13 or above'
+                  />
+                  <NcInputNumber
+                    className='w-full mt-6'
+                    defaultValue={field.value.childrens}
+                    onChange={(value) => field.onChange({ ...field.value, childrens: value })}
+                    max={4}
+                    label='Children'
+                    desc='Ages 2–12'
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </form>
 
       {/* SUM */}
       <div className='flex flex-col space-y-4'>
         <div className='flex justify-between text-neutral-6000 dark:text-neutral-300'>
           <span>
-            ${pricePerNight} x {totalNights} night
+            ${pricePerNight} x {form.watch('guests.adults') + form.watch('guests.childrens')} night
           </span>
-          <span>${pricePerNight * totalNights}</span>
+          <span>
+            ${pricePerNight * form.watch('guests.adults') + form.watch('guests.childrens')}
+          </span>
         </div>
         <div className='flex justify-between text-neutral-6000 dark:text-neutral-300'>
           <span>Service charge</span>
@@ -185,12 +208,14 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
         <div className='border-b border-neutral-200 dark:border-neutral-700'></div>
         <div className='flex justify-between font-semibold'>
           <span>Total</span>
-          <span>${pricePerNight * totalNights}</span>
+          <span>
+            ${pricePerNight * form.watch('guests.adults') + form.watch('guests.childrens')}
+          </span>
         </div>
       </div>
 
       {/* SUBMIT */}
-      <Button type='submit' onClick={handleSubmit}>
+      <Button type='submit' onSubmit={form.handleSubmit(onSubmit)}>
         {user ? (
           <>
             Book Now
@@ -203,7 +228,7 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
           </>
         )}
       </Button>
-    </>
+    </Form>
   )
 }
 
