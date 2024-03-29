@@ -47,7 +47,7 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
       childCount
     )
     if (user) {
-      // navigate(`/hotel/${hotelId}/booking`)
+      router.push(`/hotel/${hotelId}/booking`)
     } else {
       router.push(`/signin?callbackUrl=${encodeURIComponent(pathname)}`)
     }
