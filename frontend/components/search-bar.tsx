@@ -3,141 +3,192 @@
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Icons } from '@/components/my-ui/icons'
-import { addDays } from 'date-fns'
-import type { DateRange } from 'react-day-picker'
-import { FormEvent, useEffect, useState } from 'react'
+import { addDays, format } from 'date-fns'
 import { useSearchContext } from '@/context/SearchContext'
-import { Label } from './ui/label'
 import { Input } from './ui/input'
 import { useRouter } from 'next/navigation'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form'
+import { Button } from './ui/button'
+import { cn } from '@/lib/utils'
+import NcInputNumber from './my-ui/nc-input-number'
+
+export const formSchema = z.object({
+  destination: z.string().min(2).max(50),
+  dates: z.object({
+    from: z.date(),
+    to: z.date(),
+  }),
+  guests: z.object({
+    adults: z
+      .number()
+      .min(1, { message: 'Please select at least 1 adult' })
+      .max(12, { message: 'Max 12 adults occupancy' }),
+    childrens: z.number().min(0).max(12, { message: 'Max 12 adults occupancy' }),
+  }),
+})
 
 export default function SearchBar() {
   const search = useSearchContext()
   const router = useRouter()
 
-  const defaultSelected: DateRange = {
-    from: search.checkIn || new Date(),
-    to: search.checkOut || addDays(new Date(), 1),
-  }
-  const [date, setDate] = useState<DateRange | undefined>(defaultSelected)
-  const [destination, setDestination] = useState<string>(search.destination)
-  const [adultCount, setAdultCount] = useState<number>(search.adultCount)
-  const [childCount, setChildCount] = useState<number>(search.childCount)
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      destination: search.destination,
+      dates: {
+        from: search.checkIn || new Date(),
+        to: search.checkOut || addDays(new Date(), 1),
+      },
+      guests: {
+        adults: search.adultCount,
+        childrens: search.childCount,
+      },
+    },
+  })
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault()
+  function onSubmit(data: z.infer<typeof formSchema>) {
     search.saveSearchValues(
-      destination,
-      date?.from as Date,
-      date?.to as Date,
-      adultCount,
-      childCount
+      data.destination,
+      data.dates.from,
+      data.dates.to,
+      data.guests.adults,
+      data.guests.childrens
     )
     router.push('/search')
   }
 
   return (
-    <div className='flex flex-wrap items-center justify-center gap-4 py-6'>
-      <form
-        onSubmit={handleSubmit}
-        className='border-w-8002 relative z-50 flex h-[54px] w-fit select-none flex-row items-center justify-center rounded-lg border transition-[height] duration-150 bg-gradient-to-b from-[#141414] to-[#1A1A1A]'
-      >
-        <Popover>
-          <PopoverTrigger asChild>
-            <div
-              role='button'
-              className='border-w-8002 text-w-3005 group isolate z-50 flex h-full min-w-[150px] flex-row items-center whitespace-nowrap px-4 py-2 transition-[background,min-width] duration-300 ease-out hover:text-white xl:min-w-[200px]  hover:!bg-[#292929] group rounded-l-lg'
-            >
-              <Icons.calendar className='relative h-[1.2em] w-[1.2em] shrink-0 text-w-4004 top-0 mr-3 transition-colors duration-100 group-hover:text-inherit' />
-              <div className='grid text-sm'>
-                <span className='text-balance leading-normal text-muted-foreground sm:text-sm'>
-                  When
-                </span>
-              </div>
-            </div>
-          </PopoverTrigger>
-          <PopoverContent className='w-auto p-0 mt-4' align='center'>
-            <Calendar
-              initialFocus
-              mode='range'
-              defaultMonth={date?.from}
-              selected={date}
-              onSelect={setDate}
-              numberOfMonths={2}
-              disabled={{ before: new Date() }}
-            />
-          </PopoverContent>
-        </Popover>
-        <div
-          role='button'
-          className='border-w-8002 text-w-3005 group isolate z-50 flex h-full min-w-[150px] flex-row items-center whitespace-nowrap px-4 py-2 transition-[background,min-width] duration-300 ease-out hover:text-white xl:min-w-[200px] hover:!bg-[#292929] group border-x'
+    <div className='m-4 mt-0 px-2 lg:px-4'>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className='flex flex-col lg:flex-row lg:max-w-6xl lg:mx-auto items-center justify-center space-x-0 lg:space-x-2 space-y-4 lg:space-y-0 rounded-lg'
         >
-          <Icons.locate className='relative h-[1.2em] w-[1.2em] shrink-0 text-w-4004 top-0 mr-3 transition-colors duration-100 group-hover:text-inherit' />
-          <div className='grid text-sm'>
-            <Input
-              id='width'
-              className='text-md w-full focus:outline-none'
-              value={destination}
-              onChange={(event) => setDestination(event.target.value)}
-              placeholder='Search by City'
+          <div className='grid w-full lg:max-w-sm items-center gap-1.5'>
+            <FormField
+              control={form.control}
+              name='destination'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='flex'>
+                    Location <Icons.locate className='ml-2 h-4 2-4' />
+                  </FormLabel>
+                  <FormMessage />
+                  <FormControl>
+                    <Input placeholder='London, UK' {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
             />
           </div>
-        </div>
-        <Popover>
-          <PopoverTrigger asChild>
-            <div
-              role='button'
-              className='border-w-8002 text-w-3005 group isolate z-50 flex h-full flex-row items-center whitespace-nowrap px-4 py-2 transition-[background,min-width] duration-300 ease-out hover:text-white xl:min-w-[200px] hover:!bg-[#292929] group relative min-w-[170px] rounded-r-lg'
-            >
-              <Icons.users className='relative h-[1.2em] w-[1.2em] shrink-0 text-w-4004 top-0 mr-3 transition-colors duration-100 group-hover:text-inherit'></Icons.users>
-              <div className='grid text-sm'>
-                <span className='text-balance leading-normal text-muted-foreground sm:text-sm'>
-                  Who
-                </span>
-              </div>
-            </div>
-          </PopoverTrigger>
-          <PopoverContent className='w-60 mt-4' align='center'>
-            <div className='grid gap-4'>
-              <div className='grid gap-2'>
-                <div className='grid grid-cols-2 items-center gap-4'>
-                  <Label htmlFor='width'>Adults</Label>
-                  <Input
-                    type='number'
-                    inputMode='numeric'
-                    name='adultCount'
-                    min={1}
-                    placeholder='Adults Count'
-                    value={adultCount}
-                    onChange={(event) => setAdultCount(parseInt(event.target.value))}
-                  />
-                </div>
-                <div className='grid grid-cols-2 items-center gap-4'>
-                  <Label htmlFor='maxWidth'>Children</Label>
-                  <Input
-                    type='number'
-                    inputMode='numeric'
-                    name='childCount'
-                    min={0}
-                    placeholder='Children Count'
-                    value={childCount}
-                    onChange={(event) => setChildCount(parseInt(event.target.value))}
-                  />
-                </div>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
-        <button
-          aria-label='Search'
-          className='absolute right-[11px] z-50 grid aspect-square w-8 place-items-center rounded-md  transition-all text-black bg-white hover:!bg-white'
-        >
-          <Icons.search
-            className='relative h-[1.2em] shrink-0 top-0 w-4'
-            aria-hidden='true'
-          ></Icons.search>
-        </button>
-      </form>
+
+          <div className='grid w-full lg:max-w-sm items-center gap-1.5'>
+            <FormField
+              control={form.control}
+              name='dates'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='flex flex-col'>Dates</FormLabel>
+                  <FormMessage />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        id='dates'
+                        name='dates'
+                        variant={'outline'}
+                        className={cn(
+                          'w-[300px] justify-start text-left font-normal',
+                          !field.value.from && 'text-muted-foreground'
+                        )}
+                      >
+                        <Icons.calendar className='mr-3 h-4 w-4 opacity-50' />
+
+                        {field.value?.from ? (
+                          field.value?.to ? (
+                            <>
+                              {format(field.value?.from, 'LLL dd, y')} -{' '}
+                              {format(field.value?.to, 'LLL dd, y')}
+                            </>
+                          ) : (
+                            format(field.value?.from, 'LLL dd, y')
+                          )
+                        ) : (
+                          <span>Select your dates</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-auto p-0 mt-4' align='center'>
+                      <Calendar
+                        initialFocus
+                        mode='range'
+                        defaultMonth={field.value.from}
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        numberOfMonths={2}
+                        disabled={{ before: new Date() }}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className='grid w-full lg:max-w-sm items-center gap-1.5'>
+            <FormField
+              control={form.control}
+              name='guests'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='flex flex-col'>Guest</FormLabel>
+                  <FormMessage />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        id='adults'
+                        name='adults'
+                        variant={'outline'}
+                        className={cn(
+                          'w-[300px] justify-start text-left font-normal',
+                          !field.value.adults && 'text-muted-foreground'
+                        )}
+                      >
+                        <Icons.userPlus className='mr-3 h-4 w-4 opacity-50' />
+                        <span>
+                          {field.value.adults ? `${field.value.adults} Guest` : 'Add guests'}
+                        </span>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-full sm:min-w-[340px] max-w-sm bg-white dark:bg-neutral-800 top-full mt-3 py-5 sm:py-6 px-4 sm:px-8 rounded-3xl shadow-xl ring-1 ring-black ring-opacity-5'>
+                      <NcInputNumber
+                        className='w-full'
+                        defaultValue={field.value.adults}
+                        onChange={(value) => field.onChange({ ...field.value, adults: value })}
+                        max={10}
+                        min={1}
+                        label='Adults'
+                        desc='Ages 13 or above'
+                      />
+                      <NcInputNumber
+                        className='w-full mt-6'
+                        defaultValue={field.value.childrens}
+                        onChange={(value) => field.onChange({ ...field.value, childrens: value })}
+                        max={4}
+                        label='Children'
+                        desc='Ages 2–12'
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </FormItem>
+              )}
+            />
+          </div>
+          <Button type='submit'>Search</Button>
+        </form>
+      </Form>
     </div>
   )
 }
