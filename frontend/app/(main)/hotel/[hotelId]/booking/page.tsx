@@ -64,6 +64,7 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
   } = useQuery({
     queryKey: [QueryKeys.HOTEL, hotelId],
     queryFn: () => fetchHotelById(hotelId),
+    enabled: !!hotelId,
   })
 
   const { data: currentUser } = useProfile()
@@ -77,7 +78,7 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
   }
 
   return (
-    <div className='container relative mx-auto grid grid-cols-1 gap-8 px-5 pt-[120px] lg:max-w-6xl lg:grid-cols-2 lg:gap-24 mb-6'>
+    <div className='container relative mx-auto grid grid-cols-1 gap-8 px-5 pt-[60px] lg:max-w-6xl lg:grid-cols-2 lg:gap-24 mb-6'>
       <div className='order-2 space-y-10 lg:order-1'>
         <div>
           <h3 className='text-[0.625rem] tracking-[0.075rem] leading-[1.125rem] font-medium'>
@@ -241,7 +242,7 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
         </Button>
       </div>
       <div className='sticky top-24 order-1 h-fit lg:order-2'>
-        <div className='rounded-lg lg:px-5 lg:py-4 dark:lg:bg-[#1a1a1a] lg:bg-[#d9d9d9] '>
+        <div className='rounded-lg lg:px-5 lg:py-4 dark:lg:bg-[#1a1a1a] lg:bg-[#e5e4e4] '>
           <h4 className='mb-4 text-lg font-medium'>Cost breakdown</h4>
           <div className='text-w-4004'>
             <div className='mb-2 flex justify-between tracking-wider'>
