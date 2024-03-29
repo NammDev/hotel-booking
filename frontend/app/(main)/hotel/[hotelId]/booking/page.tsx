@@ -7,12 +7,6 @@ import HotelDetailLoading from '@/components/loading/hotel-detail-loading'
 import { Icons } from '@/components/my-ui/icons'
 import NcInputNumber from '@/components/my-ui/nc-input-number'
 import HotelDetailNotFound from '@/components/notFound/hotel-detail-notFound'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Input } from '@/components/ui/input'
@@ -30,6 +24,7 @@ import { useAppContext } from '@/context/AppContext'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useTheme } from 'next-themes'
+import CostBreakDown from './cost-breakdown'
 
 export default function Booking({ params }: { params: { hotelId: string } }) {
   const { theme } = useTheme()
@@ -249,62 +244,7 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
           Pay ${paymentIntentData?.totalCost}
         </Button>
       </div>
-      <div className='sticky top-24 order-1 h-fit lg:order-2'>
-        <div className='rounded-lg lg:px-5 lg:py-4 bg-muted p-4 transition-colors hover:bg-muted/50'>
-          <h4 className='mb-4 text-lg font-medium'>Cost breakdown</h4>
-          <div className='text-w-4004'>
-            <div className='mb-2 flex justify-between tracking-wider'>
-              <div>
-                ${hotel.pricePerNight} x {totalNights} nights
-              </div>
-              <div className='font-medium'>${hotel.pricePerNight * totalNights}</div>
-            </div>
-            <div className='mb-2 flex justify-between tracking-wider'>
-              <div>Taxes and fees</div>
-              <div className='font-medium'>
-                ${(hotel.pricePerNight * totalNights * 0.1).toFixed(1)}
-              </div>
-            </div>
-            <div className='mb-2'>
-              <div className='flex justify-between'>
-                <Accordion type='single' collapsible className='w-full'>
-                  <AccordionItem value='item-1'>
-                    <AccordionTrigger> All of this included</AccordionTrigger>
-                    <AccordionContent>
-                      <ul>
-                        <li className='flex items-center'>
-                          <div className='mr-2 text-w-4004'>
-                            <Icons.sun className='w-6 h-6' />
-                          </div>
-                          <div className='text-w-4004'>Smart home with views</div>
-                        </li>
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </div>
-            </div>
-          </div>
-          <div className='mb-2 flex justify-between font-medium tracking-normal text-6-white text-lg'>
-            <div>Total</div>
-            <div className='font-medium'>${paymentIntentData?.totalCost}</div>
-          </div>
-        </div>
-        <div
-          className='mt-6 flex h-[240px] w-full flex-col justify-end rounded-lg text-sm tracking-wide'
-          style={{
-            background: `linear-gradient(0deg, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 0) 100%) 0% 0% / 100%, url("${hotel.imageUrls[0]}") no-repeat center`,
-          }}
-        >
-          <div className='space-y-3 overflow-hidden px-4 pb-[14px] text-xs text-white'>
-            <div>★★★★★</div>
-            <div className='line-clamp-3' />
-            <div className='flex items-center'>
-              <div>Kevin Malloy</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <CostBreakDown hotel={hotel} totalNights={totalNights} />
     </div>
   )
 }
