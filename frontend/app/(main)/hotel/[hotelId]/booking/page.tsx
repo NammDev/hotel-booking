@@ -1,6 +1,7 @@
 'use client'
 
 import { fetchHotelById } from '@/api/hotels'
+import { DemoPaymentMethod } from '@/components/cards/payment-method'
 import HotelDetailLoading from '@/components/loading/hotel-detail-loading'
 import { Icons } from '@/components/my-ui/icons'
 import NcInputNumber from '@/components/my-ui/nc-input-number'
@@ -195,6 +196,7 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
               />
             </div>
           </div> */}
+          <DemoPaymentMethod />
         </div>
         <div className='w-full border-b border-[#404040]' />
         <div>
