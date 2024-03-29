@@ -434,14 +434,6 @@ export default function DetailPage({ params }: { params: { hotelId: string } }) 
     )
   }
 
-  const renderSidebar = () => {
-    return (
-      <div className='shadow-xl w-full flex flex-col rounded-2xl border-b border-t border-l border-r border-neutral-200 dark:border-neutral-700 space-y-6 xl:space-y-7 pb-10 p-2 sm:p-4 xl:px-8 xl:py-6'>
-        <GuestInfoForm hotelId={hotel._id} pricePerNight={hotel.pricePerNight} />
-      </div>
-    )
-  }
-
   return (
     <div className='nc-ListingStayDetailPage'>
       {/*  HEADER */}
@@ -514,7 +506,9 @@ export default function DetailPage({ params }: { params: { hotelId: string } }) 
 
         {/* SIDEBAR */}
         <div className='hidden lg:block flex-grow mt-14 lg:mt-0'>
-          <div className='sticky top-28'>{renderSidebar()}</div>
+          <div className='sticky top-28'>
+            <GuestInfoForm hotelId={hotel._id} pricePerNight={hotel.pricePerNight} />
+          </div>
         </div>
       </main>
     </div>

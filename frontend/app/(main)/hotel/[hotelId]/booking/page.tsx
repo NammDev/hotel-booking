@@ -45,15 +45,12 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
   const [adultCount, setAdultCount] = useState<number>(search.adultCount)
   const [childCount, setChildCount] = useState<number>(search.childCount)
   const [totalNights, setTotalNights] = useState<number>(0)
-  const [totalGuests, setTotalGuests] = useState<number>(search.adultCount + search.childCount)
 
   useEffect(() => {
-    setTotalGuests(adultCount + childCount)
-  }, [adultCount, childCount])
-
-  useEffect(() => {
-    const nights = date && date.from && date.to ? differenceInDays(date.to, date.from) : 0
-    setTotalNights(Math.ceil(nights))
+    if (date?.from && date?.to) {
+      const nights = Math.abs(date?.from?.getTime() - date.to.getTime()) / (1000 * 60 * 60 * 24)
+      setTotalNights(Math.ceil(nights))
+    }
   }, [date])
 
   const { data: paymentIntentData } = useQuery({
@@ -102,8 +99,16 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
             <div>
               <h4 className='font-medium'>Date</h4>
               <p className='mt-1 flex items-center gap-1'>
-                May 1st to May 4th,
-                <span className='block'>check-in at 2:00pm</span>
+                {date?.from?.toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: '2-digit',
+                })}{' '}
+                to{' '}
+                {date?.to?.toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: '2-digit',
+                })}
+                ,<span className='block'>check-in at 2:00pm</span>
               </p>
             </div>
             <Popover>
@@ -126,7 +131,9 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
           <div className='flex items-center justify-between'>
             <div>
               <h4 className='font-medium'>Guests</h4>
-              <p className='h-6'> {totalGuests ? `${totalGuests} Guests` : 'Add guests'}</p>
+              <p className='h-6'>
+                {adultCount ? `${adultCount} Adults - ${childCount} Childrens` : 'Add guests'}
+              </p>
             </div>
 
             <Popover>
@@ -221,7 +228,7 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
                   className='border-[#404040] placeholder:text-w-4004 w-full rounded-lg border bg-transparent focus:border-w-4004 h-10 p-[10px]'
                   type='tel'
                   placeholder='Add Phone Number'
-                  defaultValue='+84'
+                  defaultValue='+84 '
                   name='phone'
                 />
               </div>
