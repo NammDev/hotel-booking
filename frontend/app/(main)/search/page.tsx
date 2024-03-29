@@ -232,9 +232,7 @@ export default function SearchPage() {
 
   return (
     <Shell>
-      <PageHeader>
-        <SearchBar />
-      </PageHeader>
+      <SearchBar />
       <section className='flex flex-col space-y-6'>
         <div className='flex items-center space-x-2'>
           <Sheet>
