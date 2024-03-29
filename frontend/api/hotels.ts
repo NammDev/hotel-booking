@@ -1,4 +1,4 @@
-import { HotelSearchResponse, HotelType } from '@/lib/type'
+import { HotelSearchResponse, HotelType, PaymentIntentResponse } from '@/lib/type'
 import { axiosInstance } from '.'
 
 export type SearchParamsType = {
@@ -40,5 +40,15 @@ export const searchHotels = async (
 
 export const fetchHotelById = async (hotelId: string): Promise<HotelType> => {
   const response = await axiosInstance.get(`/api/hotels/${hotelId}`)
+  return response.data
+}
+
+export const createPaymentIntent = async (
+  hotelId: string,
+  numberOfNights: string
+): Promise<PaymentIntentResponse> => {
+  const response = await axiosInstance.post(`/api/hotels/${hotelId}/bookings/payment-intent`, {
+    numberOfNights,
+  })
   return response.data
 }

@@ -77,3 +77,7 @@
     @apply px-4;
   }
 }
+
+#payment-element input {
+  color: white;
+}

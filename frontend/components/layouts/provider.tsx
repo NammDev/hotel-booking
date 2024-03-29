@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { SearchContextProvider } from '@/context/SearchContext'
+import { AppContextProvider } from '@/context/AppContext'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -22,7 +23,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-        <SearchContextProvider>{children}</SearchContextProvider>
+        <AppContextProvider>
+          <SearchContextProvider>{children}</SearchContextProvider>
+        </AppContextProvider>
       </ThemeProvider>
       <ReactQueryDevtools />
     </QueryClientProvider>

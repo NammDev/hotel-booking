@@ -4,4 +4,5 @@ export const QueryKeys = {
   MYHOTEL: 'fetchMyHotelById',
   SEARCHHOTEL: 'searchHotel',
   HOTEL: 'fetchHotelById',
+  PAYMENT_INTENT: 'createPaymentIntent',
 }

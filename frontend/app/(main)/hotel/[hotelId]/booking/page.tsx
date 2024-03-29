@@ -1,7 +1,8 @@
 'use client'
 
-import { fetchHotelById } from '@/api/hotels'
-import { DemoPaymentMethod } from '@/components/cards/payment-method'
+import { createPaymentIntent, fetchHotelById } from '@/api/hotels'
+import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
+import { StripeCardElement } from '@stripe/stripe-js'
 import HotelDetailLoading from '@/components/loading/hotel-detail-loading'
 import { Icons } from '@/components/my-ui/icons'
 import NcInputNumber from '@/components/my-ui/nc-input-number'
@@ -21,13 +22,18 @@ import { useSearchContext } from '@/context/SearchContext'
 import { useProfile } from '@/hooks/use-profile'
 import { useQuery } from '@tanstack/react-query'
 import { addDays, differenceInDays } from 'date-fns'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { DateRange } from 'react-day-picker'
+import { Elements } from '@stripe/react-stripe-js'
+import { useAppContext } from '@/context/AppContext'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useTheme } from 'next-themes'
 
 export default function Booking({ params }: { params: { hotelId: string } }) {
-  // const { stripePromise } = useAppContext()
+  const { theme } = useTheme()
+  const { stripePromise } = useAppContext()
   const search = useSearchContext()
   const hotelId = params.hotelId
 
@@ -50,13 +56,11 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
     setTotalNights(Math.ceil(nights))
   }, [date])
 
-  // const { data: paymentIntentData } = useQuery(
-  //   'createPaymentIntent',
-  //   () => apiClient.createPaymentIntent(hotelId as string, numberOfNights.toString()),
-  //   {
-  //     enabled: !!hotelId && numberOfNights > 0,
-  //   }
-  // )
+  const { data: paymentIntentData } = useQuery({
+    queryKey: [QueryKeys.PAYMENT_INTENT, hotelId],
+    queryFn: () => createPaymentIntent(hotelId, totalNights.toString()),
+    enabled: !!hotelId && totalNights > 0,
+  })
 
   const {
     data: hotel,
@@ -154,54 +158,49 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
         <div className='w-full border-b border-[#404040]' />
         <div className='space-y-5'>
           <h3 className='text-xl font-medium'>Pay for your trip</h3>
-          {/* <div className='StripeElement'>
-            <div
-              className='__PrivateStripeElement'
-              style={{
-                margin: '-4px 0px !important',
-                padding: '0px !important',
-                border: 'none !important',
-                display: 'block !important',
-                background: 'transparent !important',
-                position: 'relative !important',
-                opacity: '1 !important',
-                clear: 'both !important',
-                transition: 'height 0.35s ease 0s !important',
+          {currentUser && paymentIntentData && (
+            <Elements
+              stripe={stripePromise}
+              options={{
+                clientSecret: paymentIntentData.clientSecret,
               }}
             >
-              <iframe
-                name='__privateStripeFrame8474'
-                frameBorder={0}
-                allowTransparency='true'
-                scrolling='no'
-                role='presentation'
-                allow='payment *; publickey-credentials-get *'
-                src='https://js.stripe.com/v3/elements-inner-payment-43bb60f9c6bb77d8166f9e863620eb09.html#wait=true&rtl=false&publicOptions[defaultValues][billingDetails][email]=kanpy2010%40gmail.com&publicOptions[defaultValues][billingDetails][name]=kanpy97&publicOptions[defaultValues][billingDetails][phone]=%2B1&publicOptions[terms][card]=never&publicOptions[layout][type]=accordion&publicOptions[layout][defaultCollapsed]=false&publicOptions[layout][radios]=false&publicOptions[layout][spacedAccordionItems]=true&componentName=payment&keyMode=live&apiKey=pk_live_51JK3PsCpHpLfxhkeas87eKZaWfNlsdajqkZW5Q45Oqh5lb3dNLOFnlWE2m8JxZ5SIIpAj1CrRrMfvuy21lJm2nyI009WUqrxTb&referrer=https%3A%2F%2Fwww.wander.com%2Ftrip-summary%2Fwander-hudson-ridge%3FcheckIn%3D2024-05-01%26checkOut%3D2024-05-04&controllerId=__privateStripeController8471'
-                title='Secure payment input frame'
-                style={{
-                  border: '0px !important',
-                  margin: '-4px',
-                  padding: '0px !important',
-                  width: 'calc(100% + 8px)',
-                  minWidth: '100% !important',
-                  overflow: 'hidden !important',
-                  display: 'block !important',
-                  userSelect: 'none !important',
-                  transform: 'translate(0px) !important',
-                  colorScheme: 'light only !important',
-                  height: 141,
-                  opacity: 1,
-                  transition: 'height 0.35s ease 0s, opacity 0.4s ease 0.1s',
-                }}
-              />
-            </div>
-          </div> */}
-          <DemoPaymentMethod />
+              <Card className='border-none shadow-none'>
+                <CardHeader className='px-0'>
+                  <CardTitle>Payment Method</CardTitle>
+                  <CardDescription>Add a new payment method to your account.</CardDescription>
+                </CardHeader>
+                <CardContent className='grid gap-6 px-0'>
+                  <CardElement
+                    id='payment-element'
+                    className='p-2 text-sm border rounded-md dark:text-white'
+                    options={{
+                      style: {
+                        base: {
+                          color: theme === 'dark' ? '#fff' : '#000',
+                        },
+                      },
+                    }}
+                  />
+                </CardContent>
+              </Card>
+            </Elements>
+          )}
         </div>
         <div className='w-full border-b border-[#404040]' />
         <div>
           <h3 className='mb-5 text-xl font-medium'>Contact information</h3>
           <form className='flex flex-col gap-5'>
+            <div className='grid grid-cols-2 gap-4'>
+              <div className='grid gap-2'>
+                <Label htmlFor='firstName'>First Name</Label>
+                <Input id='firstName' placeholder='Nam' />
+              </div>
+              <div className='grid gap-2'>
+                <Label htmlFor='lastName'>Last Name</Label>
+                <Input id='lastName' placeholder='Nguyen' />
+              </div>
+            </div>
             <label className='flex flex-col font-normal select-none opacity-50'>
               <span className='mb-2 text-sm'>Email address</span>
               <div className='relative'>
@@ -240,7 +239,7 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
           </Link>
         </div>
         <Button className='w-full' type='submit'>
-          Pay ${(hotel.pricePerNight * totalNights * 1.1).toFixed(1)}
+          Pay ${paymentIntentData?.totalCost}
         </Button>
       </div>
       <div className='sticky top-24 order-1 h-fit lg:order-2'>
@@ -281,9 +280,7 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
           </div>
           <div className='mb-2 flex justify-between font-medium tracking-normal text-6-white text-lg'>
             <div>Total</div>
-            <div className='font-medium'>
-              ${(hotel.pricePerNight * totalNights * 1.1).toFixed(1)}
-            </div>
+            <div className='font-medium'>${paymentIntentData?.totalCost}</div>
           </div>
         </div>
         <div
