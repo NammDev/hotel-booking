@@ -41,17 +41,13 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
   const [totalGuests, setTotalGuests] = useState<number>(search.adultCount + search.childCount)
 
   useEffect(() => {
-    if (search.adultCount && search.adultCount) {
-      setTotalGuests(search.adultCount + search.childCount)
-    }
-  }, [search.adultCount, search.childCount])
+    setTotalGuests(adultCount + childCount)
+  }, [adultCount, childCount])
 
   useEffect(() => {
-    if (search.checkIn && search.checkOut) {
-      const nights = date && date.from && date.to ? differenceInDays(date.to, date.from) : 0
-      setTotalNights(Math.ceil(nights))
-    }
-  }, [date, search.checkIn, search.checkOut])
+    const nights = date && date.from && date.to ? differenceInDays(date.to, date.from) : 0
+    setTotalNights(Math.ceil(nights))
+  }, [date])
 
   // const { data: paymentIntentData } = useQuery(
   //   'createPaymentIntent',
@@ -81,17 +77,17 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
   }
 
   return (
-    <div className='container relative mx-auto grid grid-cols-1 gap-8 px-5 pt-[120px] text-white lg:max-w-6xl lg:grid-cols-2 lg:gap-24'>
-      <div className='order-2 space-y-10 lg:order-1 mb-4'>
+    <div className='container relative mx-auto grid grid-cols-1 gap-8 px-5 pt-[120px] lg:max-w-6xl lg:grid-cols-2 lg:gap-24 mb-6'>
+      <div className='order-2 space-y-10 lg:order-1'>
         <div>
-          <h3 className='text-[0.625rem] tracking-[0.075rem] leading-[1.125rem] font-medium text-[rgb(153_153_153)];'>
+          <h3 className='text-[0.625rem] tracking-[0.075rem] leading-[1.125rem] font-medium'>
             TRIP SUMMARY
           </h3>
           <h2 className='mt-2 font-heading text-[2.5rem] leading-[3rem] tracking-[-0.075rem] font-medium'>
-            Wander Hudson Ridge
+            {hotel.name}
           </h2>
-          <div className='flex items-center gap-1 text-sm text-[rgb(204,204,204)]'>
-            <Icons.eye className='w-5 h-5' />
+          <div className='flex items-center gap-1 text-sm'>
+            <Icons.eye className='w-4 h-4' />
             <span>146 views in the last 24 hours</span>
           </div>
         </div>
@@ -99,9 +95,9 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
           <div className='mb-3 flex items-center justify-between sm:gap-11'>
             <div>
               <h4 className='font-medium'>Date</h4>
-              <p className='mt-1 flex items-center gap-1 text-[rgb(204,204,204)]'>
+              <p className='mt-1 flex items-center gap-1'>
                 May 1st to May 4th,
-                <span className='block'>check-in at 4:00pm</span>
+                <span className='block'>check-in at 2:00pm</span>
               </p>
             </div>
             <Popover>
@@ -124,7 +120,7 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
           <div className='flex items-center justify-between'>
             <div>
               <h4 className='font-medium'>Guests</h4>
-              <p className='h-6 text-[rgb(204,204,204)]'>1 Guest</p>
+              <p className='h-6'> {totalGuests ? `${totalGuests} Guests` : 'Add guests'}</p>
             </div>
 
             <Popover>
@@ -203,11 +199,11 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
         <div>
           <h3 className='mb-5 text-xl font-medium'>Contact information</h3>
           <form className='flex flex-col gap-5'>
-            <label className='flex flex-col font-normal text-white select-none opacity-50'>
+            <label className='flex flex-col font-normal select-none opacity-50'>
               <span className='mb-2 text-sm'>Email address</span>
               <div className='relative'>
                 <Input
-                  className='border-[#404040] placeholder:text-w-4004 w-full rounded-lg border bg-transparent text-white focus:border-w-4004 h-10 p-[10px]'
+                  className='border-[#404040] placeholder:text-w-4004 w-full rounded-lg border bg-transparent focus:border-w-4004 h-10 p-[10px]'
                   disabled
                   type='email'
                   placeholder='Email'
@@ -216,11 +212,11 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
                 />
               </div>
             </label>
-            <label className='flex flex-col font-normal text-white'>
+            <label className='flex flex-col font-normal'>
               <span className='mb-2 text-sm'>Phone number</span>
               <div className='relative'>
                 <Input
-                  className='border-[#404040] placeholder:text-w-4004 w-full rounded-lg border bg-transparent text-white focus:border-w-4004 h-10 p-[10px]'
+                  className='border-[#404040] placeholder:text-w-4004 w-full rounded-lg border bg-transparent focus:border-w-4004 h-10 p-[10px]'
                   type='tel'
                   placeholder='Add Phone Number'
                   defaultValue='+84'
@@ -233,7 +229,7 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
         <div className='w-full border-b border-[#404040]' />
         <div className='grid gap-4'>
           <h3 className='text-lg font-medium'>Rules &amp; agreements</h3>
-          <p className='text-sm text-[rgb(204,204,204)]'>
+          <p className='text-sm'>
             I recognize I am responsible for any damages or services I book through Wander
           </p>
           <Link href='/' className='w-fit text-sm font-medium underline'>
@@ -241,23 +237,27 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
           </Link>
         </div>
         <Button className='w-full' type='submit'>
-          Pay $2,055.20
+          Pay ${(hotel.pricePerNight * totalNights * 1.1).toFixed(1)}
         </Button>
       </div>
       <div className='sticky top-24 order-1 h-fit lg:order-2'>
-        <div className='rounded-lg lg:bg-[#1a1a1a] lg:px-5 lg:py-4'>
-          <h4 className='mb-4 text-lg font-medium text-white'>Cost breakdown</h4>
+        <div className='rounded-lg lg:px-5 lg:py-4 dark:lg:bg-[#1a1a1a] lg:bg-[#d9d9d9] '>
+          <h4 className='mb-4 text-lg font-medium'>Cost breakdown</h4>
           <div className='text-w-4004'>
-            <div className='mb-2 flex justify-between tracking-wider text-[rgb(204,204,204)]'>
-              <div>$612 x 3 nights</div>
-              <div className='font-medium'>$1,835</div>
+            <div className='mb-2 flex justify-between tracking-wider'>
+              <div>
+                ${hotel.pricePerNight} x {totalNights} nights
+              </div>
+              <div className='font-medium'>${hotel.pricePerNight * totalNights}</div>
             </div>
-            <div className='mb-2 flex justify-between tracking-wider text-[rgb(204,204,204)]'>
+            <div className='mb-2 flex justify-between tracking-wider'>
               <div>Taxes and fees</div>
-              <div className='font-medium'>$220.20</div>
+              <div className='font-medium'>
+                ${(hotel.pricePerNight * totalNights * 0.1).toFixed(1)}
+              </div>
             </div>
             <div className='mb-2'>
-              <div className='flex justify-between text-[rgb(204,204,204)]'>
+              <div className='flex justify-between'>
                 <Accordion type='single' collapsible className='w-full'>
                   <AccordionItem value='item-1'>
                     <AccordionTrigger> All of this included</AccordionTrigger>
@@ -278,16 +278,18 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
           </div>
           <div className='mb-2 flex justify-between font-medium tracking-normal text-6-white text-lg'>
             <div>Total</div>
-            <div className='font-medium'>$2,055.20</div>
+            <div className='font-medium'>
+              ${(hotel.pricePerNight * totalNights * 1.1).toFixed(1)}
+            </div>
           </div>
         </div>
         <div
-          className='mt-6 flex h-[240px] w-full flex-col justify-end rounded-lg text-sm tracking-wide text-[rgb(204,204,204)]'
+          className='mt-6 flex h-[240px] w-full flex-col justify-end rounded-lg text-sm tracking-wide'
           style={{
             background: `linear-gradient(0deg, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 0) 100%) 0% 0% / 100%, url("${hotel.imageUrls[0]}") no-repeat center`,
           }}
         >
-          <div className='space-y-3 overflow-hidden px-4 pb-[14px] text-xs'>
+          <div className='space-y-3 overflow-hidden px-4 pb-[14px] text-xs text-white'>
             <div>★★★★★</div>
             <div className='line-clamp-3' />
             <div className='flex items-center'>
