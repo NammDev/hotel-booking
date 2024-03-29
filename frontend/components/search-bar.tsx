@@ -56,7 +56,7 @@ export default function SearchBar() {
 
   function onSubmit(data: FormType) {
     search.saveSearchValues(
-      data.destination,
+      data.destination || '',
       data.dates.from,
       data.dates.to,
       data.guests.adults,

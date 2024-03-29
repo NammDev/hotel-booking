@@ -3,7 +3,6 @@ import Link from 'next/link'
 
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Icons } from '../my-ui/icons'
 
 export function CategoryCard({ category }: { category: any }) {
   return (

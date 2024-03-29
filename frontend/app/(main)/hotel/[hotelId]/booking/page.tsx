@@ -242,7 +242,7 @@ export default function Booking({ params }: { params: { hotelId: string } }) {
         </Button>
       </div>
       <div className='sticky top-24 order-1 h-fit lg:order-2'>
-        <div className='rounded-lg lg:px-5 lg:py-4 dark:lg:bg-[#1a1a1a] lg:bg-[#e5e4e4] '>
+        <div className='rounded-lg lg:px-5 lg:py-4 bg-muted p-4 transition-colors hover:bg-muted/50'>
           <h4 className='mb-4 text-lg font-medium'>Cost breakdown</h4>
           <div className='text-w-4004'>
             <div className='mb-2 flex justify-between tracking-wider'>
