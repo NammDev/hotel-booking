@@ -16,6 +16,7 @@ import { useMutation } from '@tanstack/react-query'
 import { toast } from '@/components/ui/use-toast'
 import { createRoomBooking } from '@/api/booking'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 type Props = {
   currentUser: UserType
@@ -41,6 +42,7 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
   const { theme } = useTheme()
   const search = useSearchContext()
   const { hotelId } = useParams()
+  const router = useRouter()
   const [isLoadingStripe, setIsLoadingStripe] = useState(false)
 
   const { mutate: bookRoom, isPending } = useMutation({
@@ -50,6 +52,7 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
       toast({
         title: data.message,
       })
+      router.push(`/hotel/${hotelId}/paydone`)
     },
     onError: (error: any) => {
       toast({

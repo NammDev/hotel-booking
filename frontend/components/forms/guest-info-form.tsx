@@ -76,7 +76,7 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
   const dateDiff = form.watch('dates')
 
   useEffect(() => {
-    if (dateDiff.from && dateDiff.to) {
+    if (dateDiff?.from && dateDiff?.to) {
       const nights =
         Math.abs(dateDiff.from.getTime() - dateDiff.to.getTime()) / (1000 * 60 * 60 * 24)
       setNumberOfNights(Math.ceil(nights))
@@ -226,19 +226,17 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
         </div>
 
         {/* SUBMIT */}
-        <Button type='submit'>
-          {user ? (
-            <>
-              Book Now
-              <span className='sr-only'>Book Now</span>
-            </>
-          ) : (
-            <>
-              Sign in to Book
-              <span className='sr-only'> Sign in to Book</span>
-            </>
-          )}
-        </Button>
+        {user ? (
+          <Button type='submit' disabled={numberOfNights === 0}>
+            Book Now
+            <span className='sr-only'>Book Now</span>
+          </Button>
+        ) : (
+          <Button type='submit'>
+            Sign in to Book
+            <span className='sr-only'> Sign in to Book</span>
+          </Button>
+        )}
       </form>
     </Form>
   )
