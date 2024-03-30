@@ -2,8 +2,6 @@ import { BookingFormData } from '@/app/(main)/hotel/[hotelId]/booking/booking-fo
 import { axiosInstance } from '.'
 
 export const createRoomBooking = async (formData: BookingFormData) => {
-  const response = await axiosInstance.post(`/api/hotels/${formData.hotelId}/bookings`, {
-    formData,
-  })
+  const response = await axiosInstance.post(`/api/hotels/${formData.hotelId}/bookings`, formData)
   return response.data
 }

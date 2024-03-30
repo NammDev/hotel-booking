@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from '@/components/ui/use-toast'
 import { createRoomBooking } from '@/api/booking'
+import { useState } from 'react'
 
 type Props = {
   currentUser: UserType
@@ -40,12 +41,14 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
   const { theme } = useTheme()
   const search = useSearchContext()
   const { hotelId } = useParams()
+  const [isLoadingStripe, setIsLoadingStripe] = useState(false)
 
   const { mutate: bookRoom, isPending } = useMutation({
+    mutationKey: ['booking', hotelId, paymentIntent.paymentIntentId],
     mutationFn: (formData: BookingFormData) => createRoomBooking(formData),
-    onSuccess: async () => {
+    onSuccess: async (data) => {
       toast({
-        title: 'Booking Saved!',
+        title: data.message,
       })
     },
     onError: (error: any) => {
@@ -73,6 +76,7 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
   })
 
   const onSubmit = async (formData: BookingFormData) => {
+    setIsLoadingStripe(true)
     if (!stripe || !elements) {
       return
     }
@@ -82,6 +86,7 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
       },
     })
     if (result.paymentIntent?.status === 'succeeded') {
+      setIsLoadingStripe(false)
       bookRoom({ ...formData, paymentIntentId: result.paymentIntent.id })
     }
   }
@@ -160,8 +165,8 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
           Booking rules
         </Link>
       </div>
-      <Button className='w-full' type='submit' disabled={isPending}>
-        {isPending ? 'Saving...' : `Pay ${paymentIntent?.totalCost}`}
+      <Button className='w-full' type='submit' disabled={isPending || isLoadingStripe}>
+        {isPending || isLoadingStripe ? 'Saving...' : `Pay ${paymentIntent?.totalCost}`}
       </Button>
     </form>
   )
