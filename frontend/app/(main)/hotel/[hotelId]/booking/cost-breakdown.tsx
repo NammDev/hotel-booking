@@ -9,10 +9,11 @@ import { HotelType, PaymentIntentResponse } from '@/lib/type'
 
 interface CostBreakDownType {
   hotel: HotelType
-  totalNights: number
+  numberOfNights: number
+  paymentIntent: PaymentIntentResponse
 }
 
-export default function CostBreakDown({ hotel, totalNights }: CostBreakDownType) {
+export default function CostBreakDown({ hotel, numberOfNights, paymentIntent }: CostBreakDownType) {
   return (
     <div className='sticky top-24 order-1 h-fit lg:order-2'>
       <div className='rounded-lg lg:px-5 lg:py-4 bg-muted p-4 transition-colors hover:bg-muted/50'>
@@ -20,15 +21,13 @@ export default function CostBreakDown({ hotel, totalNights }: CostBreakDownType)
         <div className='text-w-4004'>
           <div className='mb-2 flex justify-between tracking-wider'>
             <div>
-              ${hotel.pricePerNight} x {totalNights} nights
+              ${hotel.pricePerNight} x {numberOfNights} nights
             </div>
-            <div className='font-medium'>${hotel.pricePerNight * totalNights}</div>
+            <div className='font-medium'>${hotel.pricePerNight * numberOfNights}</div>
           </div>
           <div className='mb-2 flex justify-between tracking-wider'>
             <div>Taxes and fees</div>
-            <div className='font-medium'>
-              ${(hotel.pricePerNight * totalNights * 0.1).toFixed(1)}
-            </div>
+            <div className='font-medium'>$0</div>
           </div>
           <div className='mb-2'>
             <div className='flex justify-between'>
@@ -52,10 +51,7 @@ export default function CostBreakDown({ hotel, totalNights }: CostBreakDownType)
         </div>
         <div className='mb-2 flex justify-between font-medium tracking-normal text-6-white text-lg'>
           <div>Total</div>
-          <div className='font-medium'>
-            {' '}
-            ${(hotel.pricePerNight * totalNights * 1.1).toFixed(1)}
-          </div>
+          <div className='font-medium'> ${paymentIntent.totalCost}</div>
         </div>
       </div>
       <div
