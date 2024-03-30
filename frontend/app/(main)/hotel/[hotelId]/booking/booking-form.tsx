@@ -85,9 +85,15 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
         card: elements.getElement(CardElement) as StripeCardElement,
       },
     })
+    setIsLoadingStripe(false)
     if (result.paymentIntent?.status === 'succeeded') {
-      setIsLoadingStripe(false)
       bookRoom({ ...formData, paymentIntentId: result.paymentIntent.id })
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Payment failed',
+        description: 'Please try again',
+      })
     }
   }
 
