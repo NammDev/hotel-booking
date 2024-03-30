@@ -167,9 +167,9 @@ export const bookingHotel = async (req: Request, res: Response) => {
     if (!hotel) return res.status(400).json({ message: 'hotel not found' })
     await hotel.save()
 
-    res.status(200).send()
+    res.status(200).json({ message: 'Booking successful', booking: newBooking })
   } catch (error) {
     console.log(error)
-    res.status(500).json({ message: 'something went wrong' })
+    res.status(500).json({ message: `Error booking hotel ${error}` })
   }
 }
